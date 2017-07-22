@@ -1,0 +1,50 @@
+QDialog{
+	background-color:	#002b36;
+}
+
+QLineEdit{
+	background-color: #002b36;
+	color:#839496;
+}
+QLineEdit::hover{
+	background:#286E75;
+       color:#839496;
+}
+QListWidget
+{
+    border:2px solid gray;   /*边界线:宽度、颜色*/
+    background-color:	#002b36;
+    color:#839496;        /*前景色：文字颜色*/
+    selection-background-color: yellow;
+    /*margin:5px,5px,0px,50px;*/   /*上、下、左、右，间距*/
+}
+
+
+QListWidget::item
+{
+/*
+    padding-top:24px;
+    padding-bottom:4px;
+*/
+}
+
+
+QListWidget::item:hover
+{
+    show-decoration-selected:5;
+    background:#54FF9F;
+}
+
+QListWidget::item:selected
+{
+    background: #7B68EE;
+    padding:0px;
+    margin:0px;
+}
+
+/*上次选择后保留的状态，鼠标离开后显示*/
+QListWidget::item:selected:!active
+{
+    border-width:0px;
+    background:silver;
+}

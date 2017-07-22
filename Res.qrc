@@ -1,0 +1,24 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Icon/chalk_board_48.png</file>
+        <file>Icon/template.png</file>
+        <file>Icon/setting_gear.png</file>
+        <file>Icon/warning.png</file>
+        <file>Icon/restart.png</file>
+        <file>Icon/erase.png</file>
+        <file>Icon/save.png</file>
+        <file>Icon/exit.png</file>
+        <file>Icon/export.png</file>
+        <file>Icon/empty.png</file>
+        <file>Icon/theme.png</file>
+        <file>Icon/recover.png</file>
+        <file>Icon/AlwaysShow.png</file>
+        <file>Icon/about.png</file>
+        <file>Icon/qclipper.png</file>
+    </qresource>
+    <qresource prefix="/Setting">
+        <file>Setting/behavior.png</file>
+        <file>Setting/interface.png</file>
+        <file>Setting/sound.png</file>
+    </qresource>
+</RCC>
