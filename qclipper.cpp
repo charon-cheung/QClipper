@@ -31,6 +31,8 @@ QClipper::QClipper(QWidget *parent) :
         connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
     }
     LoadText();     //    加载常用的文本项
+    undoStack = new QUndoStack(this);
+
 }
 
 QClipper::~QClipper()
@@ -193,10 +195,7 @@ void QClipper::ClickText()
 void QClipper::LoadText()
 {
     StoredFile = new QFile(this);
-<<<<<<< HEAD
-//    目录为exe文件所在的目录
-=======
->>>>>>> 0cb6e25f8e2a996bf29ae92bbb0dc7ab6bec0c06
+
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     StoredFile->setFileName("save.txt");
     QTextStream load(StoredFile);
@@ -256,6 +255,7 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.addAction(ui->LoadTheme);
     menu.addAction(ui->Clear);
     menu.addAction(ui->Save);
+    menu.addAction(ui->Undo);
     menu.addAction(ui->Export);
     menu.addAction(ui->AddTemplate);
     menu.addAction(ui->Setting);
@@ -498,7 +498,11 @@ void QClipper::on_Save_triggered()
     ui->stored->insertItem(0, saveText);
     ui->stored->item(0)->setFont(*font);
     delete saveItem;
+
+    SaveCmd *save_cmd = new SaveCmd(ui->stored);
+    undoStack->push(save_cmd);
 //    emit StoreText(saveText);
+
 }
 
 void QClipper::on_clearMult_triggered()
@@ -526,4 +530,9 @@ void QClipper::on_Reboot_triggered()
 void QClipper::on_page_clicked()
 {
 
+}
+
+void QClipper::on_Undo_triggered()
+{
+    undoStack->undo();
 }

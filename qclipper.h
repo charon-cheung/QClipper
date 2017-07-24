@@ -14,8 +14,11 @@
 #include <QPointer>
 #include <qxtglobalshortcut.h>
 #include <QMessageBox>
+#include <QUndoStack>
+
 #include <template.h>
 #include <setting.h>
+#include <savecmd.h>
 namespace Ui {
 class QClipper;
 }
@@ -62,7 +65,7 @@ private:
 
     QFile* StoredFile;
     QString saveText;
-
+    QUndoStack *undoStack;
     enum{
         MAX_ROW = 10,
         FONT_SIZE = 24,
@@ -98,6 +101,8 @@ private slots:
     void on_Reboot_triggered();
 
     void on_page_clicked();
+
+    void on_Undo_triggered();
 
 protected:
     void closeEvent(QCloseEvent *e);

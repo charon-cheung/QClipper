@@ -942,6 +942,16 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>重启</string>
    </property>
   </action>
+  <action name="Undo">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icon/undo.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>撤销保存</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
