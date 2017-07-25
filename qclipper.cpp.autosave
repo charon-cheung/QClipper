@@ -545,7 +545,7 @@ void QClipper::on_Reboot_triggered()
 
 void QClipper::on_page_clicked()
 {
-
+    
 }
 
 void QClipper::on_Undo_triggered()
