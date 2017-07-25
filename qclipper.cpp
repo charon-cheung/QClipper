@@ -21,27 +21,24 @@ QClipper::QClipper(QWidget *parent) :
     this->SetTray();
     this->SetAutoRun(true);     //开机启动
     this->SetShortCut();
-
-    connect(qApp->clipboard(), SIGNAL(changed(QClipboard::Mode)),
-            this, SLOT(addText())  );
-
+    LoadText();     //    加载常用的文本项
+    QSound::play(":/Sound/Sound/Run.wav");
+    QCursor c;
+    StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x()-W/2,c.pos().y()-H/2, W,H));
+    undoStack = new QUndoStack(this);
     //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
     QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
     foreach (QListWidget* w, ListWidget) {
         connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
     }
-    LoadText();     //    加载常用的文本项
-    undoStack = new QUndoStack(this);
-
-    QCursor c;
-    StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x()-W/2,c.pos().y()-H/2, W,H));
+    connect(qApp->clipboard(), SIGNAL(changed(QClipboard::Mode)),
+            this, SLOT(addText())  );
 }
 
 QClipper::~QClipper()
 {
     delete ui;
     delete font;
-//    delete tem;
 }
 
 void QClipper::InitUi()
@@ -51,7 +48,7 @@ void QClipper::InitUi()
     this->setMouseTracking(true);
     this->setWindowIcon(QIcon(":/Icon/QClipper"));
     this->setWindowFlags(Qt::FramelessWindowHint);
-//    this->setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+    //    this->setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
     this->setWindowTitle("QClipper 1.0");
 
     ui->filter->setGeometry(0,1, WIDTH, FILTER_H);
@@ -74,8 +71,8 @@ void QClipper::InitUi()
     font->setBold(true);
     font->setPixelSize(FONT_SIZE);
     font->setFamily("Inconsolata");
-//    if( this->locale().language() == QLocale::Chinese)
-//        qDebug()<<"当前使用中文";
+    //    if( this->locale().language() == QLocale::Chinese)
+    //        qDebug()<<"当前使用中文";
     hasText = false;        //开始没有剪贴内容
     m_MultiSel = false;     //默认关闭多选模式
     m_CheckSame = false;    //默认相同文本也插入记录
@@ -108,7 +105,7 @@ void QClipper::SetTray()
 void QClipper::SetShortCut()
 {
     // 全局热键，托盘显示时，恢复正常窗口，不能与现有全局热键冲突,
-//    否则报错 QxtGlobalShortcut failed to register
+    //    否则报错 QxtGlobalShortcut failed to register
     wakeup= "Alt+Shift+W";
     QxtGlobalShortcut* WakeUp = new QxtGlobalShortcut(this);
     WakeUp->setShortcut(QKeySequence("Alt+Shift+W"));
@@ -160,8 +157,8 @@ void QClipper::addText()
                 box.setWindowTitle(tr("重复！"));
                 box.setText("当前文本已经在剪贴板");
                 box.setWindowFlags(Qt::WindowStaysOnTopHint);
-//                消息窗口弹出到桌面最前，只能用WindowStaysOnTopHint
-//                        box.activateWindow();
+                //                消息窗口弹出到桌面最前，只能用WindowStaysOnTopHint
+                //                        box.activateWindow();
                 box.exec();
                 return;
             }
@@ -188,7 +185,7 @@ void QClipper::ClickText()
     QListWidget* w = qobject_cast<QListWidget*>(obj);
     QString ItemText = w->currentItem()->text().remove(0,3);
     qApp->clipboard()->blockSignals(true);  //很关键，防止下一句代码中剪贴板发出dataChange信号
-    //QSound::play(":/Sound/Sound/MouseClick.wav");
+    QSound::play(":/Sound/Sound/MouseClick.wav");
     if(m_MultiSel)  //多选模式不会最小化窗口
     {
         w->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -224,11 +221,6 @@ void QClipper::LoadText()
     }
 }
 
-void QClipper::test()
-{
-    qDebug()<<"test "<<qrand()%50;
-}
-
 void QClipper::SetAutoRun(bool on)
 {
     QSettings *reg=new QSettings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
@@ -236,7 +228,7 @@ void QClipper::SetAutoRun(bool on)
     //开机启动
     if (on)
     {   reg->setValue("QClipper","D:\\Build_My_Projet\\QClipper_static\\release\\QClipper.exe");
-//        qDebug()<<"value: "<<reg->value("QClipper").toString();
+        //        qDebug()<<"value: "<<reg->value("QClipper").toString();
     }
     else
     {
@@ -260,7 +252,7 @@ bool QClipper::IsBlank(QString text)
 void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
 {
     Q_UNUSED(pos);
-//    qDebug()<<pos.x()<<"  "<<pos.y();
+    //    qDebug()<<pos.x()<<"  "<<pos.y();
     QMenu menu;
     menu.addAction(ui->LoadTheme);
     menu.addAction(ui->Clear);
@@ -287,20 +279,19 @@ void QClipper::on_LoadTheme_triggered()
     QString theme = read.readAll();
     f.close();
     this->setStyleSheet(theme);
-    //QSound::play(":/Sound/Sound/LoadTheme.wav");
 }
 
 void QClipper::on_Clear_triggered()
 {
     ui->list->clear();
     v.clear();
-    //QSound::play(":/Sound/Sound/Clear.wav");
+    QSound::play(":/Sound/Sound/Clear.wav");
 }
 
 void QClipper::on_Setting_triggered()
 {
-//    if(!m_setting)
-        m_setting = new Setting(0);
+    //    if(!m_setting)
+    m_setting = new Setting(0);
     m_setting->show();
     if(m_setting->exec() != QDialog::Accepted)    return;
     m_CheckSame = m_setting->GetCheckSame();
@@ -318,9 +309,9 @@ void QClipper::on_Export_triggered()
 {
     if(hasText)
     {
-//        QString saveFile = QFileDialog::getSaveFileName(0, "导出剪贴板记录",
-//                                                        "export",
-//                                                        tr("导出文件(*.txt)"));
+        //        QString saveFile = QFileDialog::getSaveFileName(0, "导出剪贴板记录",
+        //                                                        "export",
+        //                                                        tr("导出文件(*.txt)"));
         f = new QFile(this);
         QDir::setCurrent(QCoreApplication::applicationDirPath());
         f->setFileName("save.txt");
@@ -368,12 +359,10 @@ void QClipper::closeEvent(QCloseEvent *e)
 
     if(msg.clickedButton() == SetMin)
     {
-        //QSound::play(":/Sound/Sound/Min.wav");
         this->hide();
     }
     else if (msg.clickedButton() == Exit)
     {
-        //QSound::play(":/Sound/Sound/Close.wav");
         qApp->quit();
     }
     else if (msg.clickedButton() == Cancel)
@@ -404,15 +393,18 @@ void QClipper::TrayIconClicked(QSystemTrayIcon::ActivationReason reason)
 void QClipper::on_ShowNormal_triggered()
 {
     //两行的顺序不能交换
+    if(this->size() != QSize(0,0))      return;
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
     this->showNormal();
-
+    QSound::play(":/Sound/Sound/Run.wav");
     QCursor c;
     StartAnimation(QRect(0,0,0,0), QRect(c.pos().x()-W/2, c.pos().y()-H/2, W,H));
 }
 
 void QClipper::on_ShowMini()
 {
+    if(this->size() == QSize(0,0))      return;
+    QSound::play(":/Sound/Sound/Min.wav");
     StartAnimation(QRect(this->pos().x(), this->pos().y(), W,H), QRect(0,0, 0,0));
 }
 
@@ -466,7 +458,7 @@ bool QClipper::eventFilter(QObject *obj, QEvent *e)
             default :
                 break;
             }
-            //QSound::play(":/Sound/Sound/KeyPress.wav");
+            QSound::play(":/Sound/Sound/KeyPress.wav");
             qApp->clipboard()->blockSignals(true);
             qApp->clipboard()->setText(keyText, QClipboard::Clipboard);
             return true;
@@ -510,7 +502,7 @@ void QClipper::on_Save_triggered()
 {
     if(v.size()==0)     return;
     saveText = ui->list->currentItem()->text();
-
+    QSound::play(":/Sound/Sound/Save.wav");
     QListWidgetItem* saveItem = new QListWidgetItem(0);
     saveItem->setText(saveText);
     ui->stored->insertItem(0, saveText);
@@ -541,11 +533,6 @@ void QClipper::on_Reboot_triggered()
     QString dir = QDir::currentPath();
     QProcess::startDetached(program, args, dir);
     qApp->quit();
-}
-
-void QClipper::on_page_clicked()
-{
-
 }
 
 void QClipper::on_Undo_triggered()

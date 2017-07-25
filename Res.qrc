@@ -22,4 +22,13 @@
         <file>Setting/interface.png</file>
         <file>Setting/sound.png</file>
     </qresource>
+    <qresource prefix="/Sound">
+        <file>Sound/Clear.wav</file>
+        <file>Sound/KeyPress.wav</file>
+        <file>Sound/Min.wav</file>
+        <file>Sound/MouseClick.wav</file>
+        <file>Sound/Run.wav</file>
+        <file>Sound/Save.wav</file>
+        <file>Sound/Undo.wav</file>
+    </qresource>
 </RCC>

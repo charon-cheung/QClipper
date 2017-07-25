@@ -20,6 +20,7 @@
 #include <template.h>
 #include <setting.h>
 #include <savecmd.h>
+
 namespace Ui {
 class QClipper;
 }
@@ -37,6 +38,7 @@ private:
     void SetTray();
     void SetShortCut();
     void StartAnimation(QRect begin, QRect end);
+private:
     Ui::QClipper *ui;
 
     QVector<QString> v;
@@ -52,7 +54,6 @@ private:
 
     int count;
     Template* tem;
-
 //    QPointer<Setting> m_setting;
     Setting* m_setting;
     bool m_CheckSame;
@@ -77,39 +78,47 @@ private:
         FILTER_H = 30,
         W = WIDTH*2+5,
         H = HEIGHT+5+FILTER_H,
-        ANIMATION_TIME=150
+        ANIMATION_TIME=200
     };
-signals:
-    void StoreText(QString text);
 private slots:
     void addText();
     void ClickText();
     void LoadText();
 
-    void test();
     void SetAutoRun(bool on);
+
     bool IsBlank(QString text);
 
     void on_list_customContextMenuRequested(const QPoint &pos);
+
     void on_LoadTheme_triggered();
+
     void on_Clear_triggered();
+
     void on_Setting_triggered();
+
     void on_Export_triggered();
+
     void on_About_QClipper_triggered();
+
     void TrayIconClicked(QSystemTrayIcon::ActivationReason reason);
 
     void on_ShowNormal_triggered();
     void on_ShowMini();
 
     void on_Exit_triggered();
-    void on_filter_textChanged(const QString &arg1);
-    void on_AddTemplate_triggered();
-    void on_Save_triggered();
-    void on_clearMult_triggered();
-    void on_AlwaysShow_triggered();
-    void on_Reboot_triggered();
 
-    void on_page_clicked();
+    void on_filter_textChanged(const QString &arg1);
+
+    void on_AddTemplate_triggered();
+
+    void on_Save_triggered();
+
+    void on_clearMult_triggered();
+
+    void on_AlwaysShow_triggered();
+
+    void on_Reboot_triggered();
 
     void on_Undo_triggered();
 
