@@ -8,7 +8,8 @@ SaveCmd::SaveCmd(QListWidget* w)
 
 void SaveCmd::undo()
 {
-    widget->takeItem(0);
+    QListWidgetItem* item= widget->takeItem(0);
+    delete item;
 }
 
 void SaveCmd::redo()

@@ -33,6 +33,17 @@ QClipper::QClipper(QWidget *parent) :
     LoadText();     //    加载常用的文本项
     undoStack = new QUndoStack(this);
 
+//    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
+//    animation->setDuration(1000);
+//    animation->setStartValue(0);
+//    animation->setEndValue(1);
+//    animation->start();
+    QCursor c;
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(QRect(0,0, 0,0));
+    animation->setEndValue(QRect(c.pos().x(),c.pos().y(), W,H));
+    animation->start();
 }
 
 QClipper::~QClipper()
@@ -46,8 +57,8 @@ QClipper::~QClipper()
 
 void QClipper::InitUi()
 {
-    this->resize(WIDTH*2+5, HEIGHT+5+FILTER_H);
-    this->setMaximumSize(WIDTH*2+5, HEIGHT+5+FILTER_H);
+    this->resize(W, H);
+    this->setMaximumSize(W, H);
     this->setMouseTracking(true);
     this->setWindowIcon(QIcon(":/Icon/QClipper"));
     this->setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
@@ -115,7 +126,7 @@ void QClipper::SetShortCut()
 
     QxtGlobalShortcut* MiNi = new QxtGlobalShortcut(this);
     MiNi->setShortcut(QKeySequence("Alt+Shift+D"));
-    connect(MiNi, SIGNAL(activated()), this, SLOT(showMinimized()) );
+    connect(MiNi, SIGNAL(activated()), this, SLOT(on_ShowMini()) );
 }
 
 void QClipper::addText()
@@ -396,6 +407,22 @@ void QClipper::on_ShowNormal_triggered()
     //两行的顺序不能交换
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->showNormal();
+
+    QCursor c;
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(QRect(0,0, 0,0));
+    animation->setEndValue(QRect(c.pos().x(), c.pos().y(), W,H));
+    animation->start();
+}
+
+void QClipper::on_ShowMini()
+{
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(QRect(this->pos().x(), this->pos().y(), W,H));
+    animation->setEndValue(QRect(0,0, 0,0));
+    animation->start();
 }
 
 void QClipper::on_Exit_triggered()
@@ -501,8 +528,6 @@ void QClipper::on_Save_triggered()
 
     SaveCmd *save_cmd = new SaveCmd(ui->stored);
     undoStack->push(save_cmd);
-//    emit StoreText(saveText);
-
 }
 
 void QClipper::on_clearMult_triggered()

@@ -15,6 +15,7 @@
 #include <qxtglobalshortcut.h>
 #include <QMessageBox>
 #include <QUndoStack>
+#include <QPropertyAnimation>
 
 #include <template.h>
 #include <setting.h>
@@ -66,12 +67,17 @@ private:
     QFile* StoredFile;
     QString saveText;
     QUndoStack *undoStack;
+    QPropertyAnimation *animation;
+
     enum{
         MAX_ROW = 10,
         FONT_SIZE = 24,
         WIDTH = 300,
         HEIGHT = 300,
-        FILTER_H = 30
+        FILTER_H = 30,
+        W = WIDTH*2+5,
+        H = HEIGHT+5+FILTER_H,
+        ANIMATION_TIME=150
     };
 signals:
     void StoreText(QString text);
@@ -91,7 +97,10 @@ private slots:
     void on_Export_triggered();
     void on_About_QClipper_triggered();
     void TrayIconClicked(QSystemTrayIcon::ActivationReason reason);
+
     void on_ShowNormal_triggered();
+    void on_ShowMini();
+
     void on_Exit_triggered();
     void on_filter_textChanged(const QString &arg1);
     void on_AddTemplate_triggered();
