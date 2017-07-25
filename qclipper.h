@@ -36,7 +36,7 @@ private:
     void InitUi();
     void SetTray();
     void SetShortCut();
-
+    void StartAnimation(QRect begin, QRect end);
     Ui::QClipper *ui;
 
     QVector<QString> v;

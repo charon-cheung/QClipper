@@ -33,17 +33,8 @@ QClipper::QClipper(QWidget *parent) :
     LoadText();     //    加载常用的文本项
     undoStack = new QUndoStack(this);
 
-//    QPropertyAnimation *animation = new QPropertyAnimation(this, "windowOpacity");
-//    animation->setDuration(1000);
-//    animation->setStartValue(0);
-//    animation->setEndValue(1);
-//    animation->start();
     QCursor c;
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(QRect(0,0, 0,0));
-    animation->setEndValue(QRect(c.pos().x(),c.pos().y(), W,H));
-    animation->start();
+    StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x(),c.pos().y(), W,H));
 }
 
 QClipper::~QClipper()
@@ -127,6 +118,15 @@ void QClipper::SetShortCut()
     QxtGlobalShortcut* MiNi = new QxtGlobalShortcut(this);
     MiNi->setShortcut(QKeySequence("Alt+Shift+D"));
     connect(MiNi, SIGNAL(activated()), this, SLOT(on_ShowMini()) );
+}
+
+void QClipper::StartAnimation(QRect begin, QRect end)
+{
+    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
+    animation->setDuration(ANIMATION_TIME);
+    animation->setStartValue(begin);
+    animation->setEndValue(end);
+    animation->start();
 }
 
 void QClipper::addText()
@@ -409,20 +409,12 @@ void QClipper::on_ShowNormal_triggered()
     this->showNormal();
 
     QCursor c;
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(QRect(0,0, 0,0));
-    animation->setEndValue(QRect(c.pos().x(), c.pos().y(), W,H));
-    animation->start();
+    StartAnimation(QRect(0,0,0,0), QRect(c.pos().x(), c.pos().y(), W,H));
 }
 
 void QClipper::on_ShowMini()
 {
-    QPropertyAnimation *animation = new QPropertyAnimation(this, "geometry");
-    animation->setDuration(ANIMATION_TIME);
-    animation->setStartValue(QRect(this->pos().x(), this->pos().y(), W,H));
-    animation->setEndValue(QRect(0,0, 0,0));
-    animation->start();
+    StartAnimation(QRect(this->pos().x(), this->pos().y(), W,H), QRect(0,0, 0,0));
 }
 
 void QClipper::on_Exit_triggered()
