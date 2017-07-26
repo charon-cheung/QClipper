@@ -939,6 +939,16 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>撤销保存</string>
    </property>
   </action>
+  <action name="Help">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icon/Help.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>帮助</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

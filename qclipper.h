@@ -122,6 +122,8 @@ private slots:
 
     void on_Undo_triggered();
 
+    void on_Help_triggered();
+
 protected:
     void closeEvent(QCloseEvent *e);
     void changeEvent(QEvent *e);

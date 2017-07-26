@@ -260,6 +260,7 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.addAction(ui->Undo);
     menu.addAction(ui->Export);
     menu.addAction(ui->AddTemplate);
+    menu.addAction(ui->Help);
     menu.addAction(ui->Setting);
     if(m_MultiSel)
         menu.addAction(ui->clearMult);
@@ -538,4 +539,14 @@ void QClipper::on_Reboot_triggered()
 void QClipper::on_Undo_triggered()
 {
     undoStack->undo();
+}
+
+void QClipper::on_Help_triggered()
+{
+    QMessageBox::information(0,"使用说明",
+                             "Alt+Shift+W: 呼唤         \n"
+                             "Alt+Shift+D: 隐藏         \n"
+                             "在托盘点击右键可以退出    \n"
+                             "可用鼠标点击和键盘选择    \n"
+                             "可保存剪贴文本到常用并导出");
 }
