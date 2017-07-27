@@ -195,7 +195,7 @@ void QClipper::ClickText()
     else {
         qApp->clipboard()->setText(ItemText, QClipboard::Clipboard);
         if(m_show)  return;
-        this->showMinimized();
+        this->on_ShowMini();
     }
 }
 
