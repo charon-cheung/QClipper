@@ -128,9 +128,9 @@ void QClipper::StartAnimation(QRect begin, QRect end)
 void QClipper::addText()
 {
     qApp->clipboard()->blockSignals(false);   //解除点击和按键盘时的信号封锁
-    //    QString text=qApp->clipboard()->text();
-    QString text = qApp->clipboard()->mimeData()->text();
-    qDebug()<<"text: "<<text;
+        QString text=qApp->clipboard()->text(QClipboard::Clipboard);
+//    QString text = qApp->clipboard()->mimeData()->text();
+    qDebug()<<"复制到剪贴板的文本: "<<text;
     if(text.isEmpty())  return;     // 空，不处理
     if(IsBlank(text))  return;      // 若复制的全是空白字符，则不处理
 
@@ -208,7 +208,7 @@ void QClipper::LoadText()
     QTextStream load(StoredFile);
     if(!StoredFile->open(QIODevice::ReadOnly))
     {
-        qDebug()<<"加载保存的文本出错:"<<StoredFile->errorString();
+        QMessageBox::warning(this, "加载保存的文本出错",StoredFile->errorString());
         return;
     }
     load.setCodec("UTF-8");
@@ -252,7 +252,7 @@ bool QClipper::IsBlank(QString text)
 void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
 {
     Q_UNUSED(pos);
-    //    qDebug()<<pos.x()<<"  "<<pos.y();
+//    qDebug()<<pos.x()<<"  "<<pos.y();
     QMenu menu;
     menu.addAction(ui->LoadTheme);
     menu.addAction(ui->Clear);
@@ -276,7 +276,10 @@ void QClipper::on_LoadTheme_triggered()
     QFile f(fileName);
     QTextStream read(&f);
     if(! f.open(QIODevice::ReadOnly))
-        qDebug()<<"加载主题出错:"<<f.errorString();
+    {
+        QMessageBox::warning(this, "加载主题文件出错",f.errorString());
+        return;
+    }
     QString theme = read.readAll();
     f.close();
     this->setStyleSheet(theme);
@@ -319,14 +322,13 @@ void QClipper::on_Export_triggered()
         QTextStream write(f);
         if(! f->open(QIODevice::WriteOnly) )    // 加这句才生成export.txt
         {
-            qDebug()<<"导出时报错:"<<f->errorString();
+            QMessageBox::warning(this,"导出到常用文本时出错",f->errorString());
             return;
         }
         write.setCodec("UTF-8");
         for(int i=0; i<ui->stored->count(); i++)
         {
             QString text = ui->stored->item(i)->text();
-            qDebug()<<"on_Export "<<text;
             write<<text<<"\n";
         }
         f->close();
