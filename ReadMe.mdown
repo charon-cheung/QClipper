@@ -14,7 +14,8 @@
 13. 撤销保存到常用文本的操作
 
 #### 发现的问题
-1. 使用Qt 5.9的MSVC编译器时，测试出现复制文本不进入剪贴板的情况，但使用MinGW编译器未出问题
+1. 复制文本到剪贴板经常失败，找不到原因，可能是Qt的bug  
+   参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
 2. 每次设定透明度后，下次打开“设置”，透明度又重置为1
 3. 托盘里设置后，程序会退出。
 4. 在QClipper析构函数里delete指针,Qt 5.1 MinGW编译器可能报错,静态编译不报错。
