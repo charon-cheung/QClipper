@@ -31,7 +31,7 @@ QClipper::QClipper(QWidget *parent) :
     foreach (QListWidget* w, ListWidget) {
         connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
     }
-    connect(qApp->clipboard(), SIGNAL(changed(QClipboard::Mode)),
+    connect(qApp->clipboard(), SIGNAL(dataChanged()),
             this, SLOT(addText())  );
 }
 
@@ -128,9 +128,9 @@ void QClipper::StartAnimation(QRect begin, QRect end)
 void QClipper::addText()
 {
     qApp->clipboard()->blockSignals(false);   //解除点击和按键盘时的信号封锁
-        QString text=qApp->clipboard()->text(QClipboard::Clipboard);
+    QString text=qApp->clipboard()->text(QClipboard::Clipboard);
 //    QString text = qApp->clipboard()->mimeData()->text();
-    qDebug()<<"复制到剪贴板的文本: "<<text;
+    qDebug()<<"复制到剪贴板的文本: "<<text<<qrand()%50;
     if(text.isEmpty())  return;     // 空，不处理
     if(IsBlank(text))  return;      // 若复制的全是空白字符，则不处理
 
