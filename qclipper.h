@@ -46,7 +46,7 @@ private:
     QFont* font;
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;
-    QxtGlobalShortcut* shortcut;
+    QxtGlobalShortcut* shortcut, WakeUp, Mini;
     bool hasText;
 
     QString MultiText;
@@ -115,8 +115,6 @@ private slots:
     void on_Save_triggered();
 
     void on_clearMult_triggered();
-
-    void on_AlwaysShow_triggered();
 
     void on_Reboot_triggered();
 

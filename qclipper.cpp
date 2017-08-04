@@ -79,6 +79,7 @@ void QClipper::InitUi()
     m_CheckSame = false;    //默认相同文本也插入记录
     m_KeepMin = false;      //默认关闭时不会最小化
     m_show = false;         // 不要总是显示
+    ui->ShowNormal->setEnabled(false);
 }
 
 void QClipper::SetTray()
@@ -86,7 +87,6 @@ void QClipper::SetTray()
     //    托盘菜单
     trayMenu = new QMenu(this);
     trayMenu->addAction(ui->ShowNormal);
-    trayMenu->addAction(ui->AlwaysShow);
     trayMenu->addAction(ui->Reboot);
     trayMenu->addAction(ui->Setting);
     trayMenu->addAction(ui->Exit);
@@ -290,6 +290,9 @@ void QClipper::on_Clear_triggered()
 {
     ui->list->clear();
     v.clear();
+    qApp->clipboard()->clear(QClipboard::Clipboard);
+    qApp->clipboard()->clear(QClipboard::Selection);
+    qApp->clipboard()->clear(QClipboard::FindBuffer);
     QSound::play(":/Sound/Sound/Clear.wav");
 }
 
@@ -403,6 +406,7 @@ void QClipper::on_ShowNormal_triggered()
     QSound::play(":/Sound/Sound/Run.wav");
     QCursor c;
     StartAnimation(QRect(0,0,0,0), QRect(c.pos().x()-W/2, c.pos().y()-H/2, W,H));
+    ui->ShowNormal->setEnabled(false);
 }
 
 void QClipper::on_ShowMini()
@@ -410,6 +414,7 @@ void QClipper::on_ShowMini()
     if(this->size() == QSize(0,0))      return;
     QSound::play(":/Sound/Sound/Min.wav");
     StartAnimation(QRect(this->pos().x(), this->pos().y(), W,H), QRect(0,0, 0,0));
+    ui->ShowNormal->setEnabled(true);
 }
 
 void QClipper::on_Exit_triggered()
@@ -523,13 +528,6 @@ void QClipper::on_clearMult_triggered()
     MultiText.clear();
 }
 
-void QClipper::on_AlwaysShow_triggered()
-{
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);
-    this->showNormal();
-    m_show = true;
-}
-
 void QClipper::on_Reboot_triggered()
 {
     QString program = QApplication::applicationFilePath();
@@ -547,9 +545,12 @@ void QClipper::on_Undo_triggered()
 void QClipper::on_Help_triggered()
 {
     QMessageBox::information(0,"使用说明",
-                             "Alt+Shift+W: 呼唤         \n"
-                             "Alt+Shift+D: 隐藏         \n"
-                             "在托盘点击右键可以退出    \n"
-                             "可用鼠标点击和键盘选择    \n"
-                             "可保存剪贴文本到常用并导出");
+                             "Alt+Shift+W : 呼唤                       \n\n"
+                             "Alt+Shift+D : 隐藏                       \n\n"
+                             "在托盘点击右键可以退出                   \n\n"
+                             "可用鼠标点击和键盘选择                   \n\n"
+                             "可保存剪贴文本到常用再导出               \n\n"
+                             "在exe所在文件夹建save.text可以保存         \n"
+                             "常用的剪贴文本                               ");
+//    QMessageBox::setWindowFlags(Qt::WindowStaysOnTopHint);
 }
