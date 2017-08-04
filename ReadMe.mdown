@@ -16,7 +16,7 @@
 #### 发现的问题
 1. 复制文本到剪贴板经常失败，找不到原因，可能是Qt的bug  
    参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
-2. 只有在本机电脑上运行出现1.的问题，在其他电脑上都正常
+2. 删除了安装的另一个剪贴板工具后，不再出现1.的问题，基本可以正常使用
 2. 每次设定透明度后，下次打开“设置”，透明度又重置为1
 3. 托盘里设置后，程序会退出
 
