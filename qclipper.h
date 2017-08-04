@@ -73,9 +73,9 @@ private:
     enum{
         MAX_ROW = 10,
         FONT_SIZE = 24,
-        WIDTH = 300,
+        WIDTH = 320,
         HEIGHT = 300,
-        FILTER_H = 30,
+        FILTER_H = 35,
         W = WIDTH*2+5,
         H = HEIGHT+5+FILTER_H,
         ANIMATION_TIME=200
