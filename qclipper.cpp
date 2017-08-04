@@ -53,6 +53,7 @@ void QClipper::InitUi()
 
     ui->filter->setGeometry(0,1, WIDTH, FILTER_H);
     ui->filter->setPlaceholderText("Filter");
+    ui->label->setGeometry(W*0.7,4, 110,30);
     //    列表属性设置
     ui->list->setFrameStyle(QFrame::Plain);
     ui->list->setFrameShape(QFrame::NoFrame);
