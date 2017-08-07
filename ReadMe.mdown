@@ -13,11 +13,11 @@
 12. 启动、显示、最小化时有动画效果，前两者情况跟随鼠标
 13. 撤销保存到常用文本的操作
 14. 改变QClipboard的信号为dataChanged后，Ubuntu平台已经解决剪贴板问题,删除了安装的另一个剪贴板工具后，win10平台也没有了复制的问题
+
 #### 发现的问题
 1. 更改信号之前，复制文本到剪贴板有时会失败，找不到原因，可能是Qt的bug  
    参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
 2. 每次设定透明度后，下次打开“设置”，透明度又重置为1
-3. 托盘里设置后，程序会退出
 
 
 
