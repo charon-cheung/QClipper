@@ -343,7 +343,7 @@ void QClipper::on_Export_triggered()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(0, "QClipper 1.0", "QClipper是我自己开发的一个剪贴板工具。");
+    QMessageBox::about(0, "QClipper 1.1", "QClipper是我自己开发的一个剪贴板工具。");
 }
 
 void QClipper::closeEvent(QCloseEvent *e)
