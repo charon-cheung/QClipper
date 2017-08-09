@@ -2,13 +2,11 @@
 #include "ui_qclipper.h"
 #include <QDebug>
 #include <QSizePolicy>
-#include <QIcon>
 #include <QSettings>
 #include <QMimeData>
 #include <QAction>
 #include <QFileDialog>
 #include <QPushButton>
-#include <QMap>
 #include <QSound>
 #include <QProcess>
 
@@ -261,8 +259,9 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.addAction(ui->Undo);
     menu.addAction(ui->Export);
     menu.addAction(ui->AddTemplate);
-    menu.addAction(ui->Help);
     menu.addAction(ui->Setting);
+    menu.addAction(ui->Close);
+    menu.addAction(ui->Help);
     if(m_MultiSel)
         menu.addAction(ui->clearMult);
     menu.addAction(ui->About_QClipper);
@@ -344,36 +343,6 @@ void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
     QMessageBox::about(0, "QClipper 1.1", "QClipper是我自己开发的一个剪贴板工具。");
-}
-
-void QClipper::closeEvent(QCloseEvent *e)
-{
-    e->ignore();
-    if(m_KeepMin)
-    {
-        this->hide();
-        return;
-    }
-    QMessageBox msg;
-    msg.setWindowTitle(tr("请注意！"));
-    msg.setText(tr("选择需要的操作"));
-
-    QPushButton* SetMin = msg.addButton(tr("最小化到托盘"), QMessageBox::ActionRole);
-    QPushButton* Exit = msg.addButton(tr("退出"), QMessageBox::ActionRole);
-    QPushButton* Cancel = msg.addButton(tr("取消"), QMessageBox::ActionRole);
-    msg.setWindowFlags(Qt::WindowStaysOnTopHint);
-    msg.exec();
-
-    if(msg.clickedButton() == SetMin)
-    {
-        this->hide();
-    }
-    else if (msg.clickedButton() == Exit)
-    {
-        qApp->quit();
-    }
-    else if (msg.clickedButton() == Cancel)
-        this->close();
 }
 
 void QClipper::changeEvent(QEvent *e)
@@ -500,9 +469,9 @@ void QClipper::on_AddTemplate_triggered()
 {
     tem = new Template(this);
     tem->show();
-    if(tem->exec()==QDialog::Accepted && ! tem->exp.isEmpty())
+    if(tem->exec()==QDialog::Accepted && ! tem->getExp().isEmpty())
     {
-        qApp->clipboard()->setText(tem->exp);
+        qApp->clipboard()->setText(tem->getExp());
     }
     else return;
 }
@@ -552,5 +521,33 @@ void QClipper::on_Help_triggered()
                              "可保存剪贴文本到常用再导出               \n\n"
                              "在exe所在文件夹建save.text可以保存         \n"
                              "常用的剪贴文本                               ");
-//    QMessageBox::setWindowFlags(Qt::WindowStaysOnTopHint);
+}
+
+void QClipper::on_Close_triggered()
+{
+    if(m_KeepMin)
+    {
+        this->hide();
+        return;
+    }
+    QMessageBox msg;
+    msg.setWindowTitle(tr("请注意！"));
+    msg.setText(tr("选择需要的操作"));
+    msg.setWindowFlags(Qt::WindowCloseButtonHint);
+    QPushButton* SetMin = msg.addButton(tr("最小化到托盘"), QMessageBox::ActionRole);
+    QPushButton* Exit = msg.addButton(tr("退出"), QMessageBox::ActionRole);
+    QPushButton* Cancel = msg.addButton(tr("取消"), QMessageBox::ActionRole);
+    msg.setWindowFlags(Qt::WindowStaysOnTopHint);
+    msg.exec();
+
+    if(msg.clickedButton() == SetMin)
+    {
+        this->on_ShowMini();
+    }
+    else if (msg.clickedButton() == Exit)
+    {
+        qApp->quit();
+    }
+    else if (msg.clickedButton() == Cancel)
+        msg.close();
 }

@@ -17,6 +17,7 @@
         <file>Icon/qclipper.png</file>
         <file>Icon/undo.png</file>
         <file>Icon/Help.png</file>
+        <file>Icon/close.png</file>
     </qresource>
     <qresource prefix="/Setting">
         <file>Setting/behavior.png</file>

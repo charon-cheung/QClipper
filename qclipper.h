@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QClipboard>
 #include <QVector>
-#include <QFont>
 #include <QListWidgetItem>
 #include <QCloseEvent>
 #include <QSystemTrayIcon>
@@ -122,8 +121,9 @@ private slots:
 
     void on_Help_triggered();
 
+    void on_Close_triggered();
+
 protected:
-    void closeEvent(QCloseEvent *e);
     void changeEvent(QEvent *e);
     bool eventFilter(QObject *obj, QEvent *e);
 };

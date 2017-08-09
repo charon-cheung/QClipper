@@ -15,6 +15,11 @@ Template::~Template()
     delete ui;
 }
 
+QString Template::getExp()
+{
+    return exp;
+}
+
 void Template::on_Cancel_clicked()
 {
     this->reject();

@@ -1,5 +1,7 @@
-1. #include<QDebug>
-1. ####
-3. &emsp;&emsp;
-2. <center>  </center>
-1. <font color = blue>  </font>
+1. <<qrand()%100;
+1.  if(0){}
+2. #include <QDebug>
+3. ####
+4. &emsp;&emsp;
+5. <center>  </center>
+6. <font color = blue>  </font>

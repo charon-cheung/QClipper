@@ -14,8 +14,7 @@ class Template : public QDialog
 public:
     explicit Template(QWidget *parent = 0);
     ~Template();
-    QString exp;    //需要在QClipper类中访问
-
+    QString getExp();
 private slots:
 
     void on_Cancel_clicked();
@@ -26,7 +25,7 @@ private slots:
 
 private:
     Ui::Template *ui;
-
+    QString exp;
 };
 
 #endif // TEMPLATE_H

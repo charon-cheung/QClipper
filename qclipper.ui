@@ -939,6 +939,16 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>帮助</string>
    </property>
   </action>
+  <action name="Close">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icon/close.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>关闭</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
