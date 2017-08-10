@@ -92,7 +92,7 @@ void QClipper::SetTray()
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
-    trayIcon->setToolTip("QClipper 1.0");
+    trayIcon->setToolTip("QClipper 1.1");
     trayIcon->setContextMenu(trayMenu);
     trayIcon->showMessage("托盘标题", "托盘内容", QSystemTrayIcon::Information, 3000);
     trayIcon->show();
@@ -300,6 +300,7 @@ void QClipper::on_Setting_triggered()
     //    if(!m_setting)
     m_setting = new Setting(0);
     m_setting->show();
+    m_setting->setWindowFlags(Qt::WindowStaysOnTopHint);
     if(m_setting->exec() != QDialog::Accepted)    return;
     m_CheckSame = m_setting->GetCheckSame();
     m_MultiSel = m_setting->GetMultiSel();
@@ -533,11 +534,13 @@ void QClipper::on_Close_triggered()
     QMessageBox msg;
     msg.setWindowTitle(tr("请注意！"));
     msg.setText(tr("选择需要的操作"));
-    msg.setWindowFlags(Qt::WindowCloseButtonHint);
+
     QPushButton* SetMin = msg.addButton(tr("最小化到托盘"), QMessageBox::ActionRole);
     QPushButton* Exit = msg.addButton(tr("退出"), QMessageBox::ActionRole);
     QPushButton* Cancel = msg.addButton(tr("取消"), QMessageBox::ActionRole);
-    msg.setWindowFlags(Qt::WindowStaysOnTopHint);
+//    不显示最大化和最小化按钮,必须用两行完成
+    msg.setWindowFlags(msg.windowFlags() & ~Qt::WindowMinMaxButtonsHint);
+    msg.setWindowFlags(msg.windowFlags() | Qt::WindowStaysOnTopHint);
     msg.exec();
 
     if(msg.clickedButton() == SetMin)
