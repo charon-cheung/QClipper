@@ -216,12 +216,13 @@ void QClipper::LoadSaveText()
     }
     load.setCodec("UTF-8");
     QString s = load.readAll();
-    QStringList ll = s.split("\n", QString::SkipEmptyParts);
-    for(int i=0; i<ll.count(); i++)
+    loadText = s.split("\n", QString::SkipEmptyParts);
+    for(int i=0; i<loadText.count(); i++)
     {
-        ui->stored->insertItem(0, ll.at(ll.count()-1-i));
+        ui->stored->insertItem(0, loadText.at(loadText.count()-1-i));
         ui->stored->item(0)->setFont(*font);
     }
+    delete StoredFile;
 }
 
 void QClipper::SetAutoRun(bool on)
@@ -315,7 +316,7 @@ void QClipper::on_Setting_triggered()
     wakeup = m_setting->GetWakeUp();
 
 }
-
+//需要优化，目前实际是每次新建文件后重置，全部写入文本
 void QClipper::on_Export_triggered()
 {
     if(hasText)
@@ -343,7 +344,7 @@ void QClipper::on_Export_triggered()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(0, "QClipper 1.1", "QClipper是我自己开发的一个剪贴板工具。");
+    QMessageBox::about(this, "QClipper 1.1", "QClipper是我自己开发的一个剪贴板工具。");
 }
 
 void QClipper::changeEvent(QEvent *e)
@@ -553,4 +554,36 @@ void QClipper::on_Close_triggered()
     }
     else if (msg.clickedButton() == Cancel)
         msg.close();
+}
+
+void QClipper::on_Delete_triggered()
+{
+    QString currentText = ui->stored->currentItem()->text();
+    loadText.removeOne(currentText);
+
+    QFile *file = new QFile(this);
+    QDir::setCurrent(QCoreApplication::applicationDirPath());
+    file->setFileName("save.txt");
+    QTextStream write(file);
+
+    if(! file->open(QIODevice::WriteOnly | QIODevice::Truncate) )
+    {
+        QMessageBox::warning(this,"删除常用文本时出错",file->errorString());
+        return;
+    }
+    write.setCodec("UTF-8");
+    foreach (QString s, loadText)
+        write<<s<<"\n";
+    file->close();
+
+    delete file;
+    delete ui->stored->currentItem();
+}
+
+void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
+{
+    Q_UNUSED(pos);
+    QMenu m;
+    m.addAction(ui->Delete);
+    m.exec(QCursor::pos());
 }

@@ -20,4 +20,5 @@
 1. 更改信号之前，复制文本到剪贴板有时会失败，找不到原因，可能是Qt的bug  
    参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
 2. 每次设定透明度后，下次打开“设置”，透明度又重置为1
-3. 在程序中删除常用文本
+3. 文本的操作相关代码重复性高，有待优化
+4. 文本另存的打开方式改为QIODevice::Append

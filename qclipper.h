@@ -66,6 +66,7 @@ private:
 
     QFile* StoredFile;
     QString saveText;
+    QStringList loadText;
     QUndoStack *undoStack;
     QPropertyAnimation *animation;
 
@@ -122,6 +123,10 @@ private slots:
     void on_Help_triggered();
 
     void on_Close_triggered();
+
+    void on_Delete_triggered();
+
+    void on_stored_customContextMenuRequested(const QPoint &pos);
 
 protected:
     void changeEvent(QEvent *e);

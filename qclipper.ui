@@ -949,6 +949,16 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>关闭</string>
    </property>
   </action>
+  <action name="Delete">
+   <property name="icon">
+    <iconset>
+     <normalon>:/Icon/delete.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>删除</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
