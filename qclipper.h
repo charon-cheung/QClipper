@@ -82,7 +82,7 @@ private:
 private slots:
     void addText();
     void ClickText();
-    void LoadText();
+    void LoadSaveText();
 
     void SetAutoRun(bool on);
 

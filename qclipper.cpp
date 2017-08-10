@@ -19,11 +19,12 @@ QClipper::QClipper(QWidget *parent) :
     this->SetTray();
     this->SetAutoRun(true);     //开机启动
     this->SetShortCut();
-    LoadText();     //    加载常用的文本项
+    LoadSaveText();     //  加载常用的文本项
     QSound::play(":/Sound/Sound/Run.wav");
     QCursor c;
     StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x()-W/2,c.pos().y()-H/2, W,H));
     undoStack = new QUndoStack(this);
+
     //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
     QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
     foreach (QListWidget* w, ListWidget) {
@@ -130,7 +131,7 @@ void QClipper::addText()
     QString text=qApp->clipboard()->text(QClipboard::Clipboard);
 //    QString text = qApp->clipboard()->mimeData()->text();
     qDebug()<<"复制到剪贴板的文本: "<<text<<qrand()%50;
-    if(text.isEmpty())  return;     // 空，不处理
+    if(text.isEmpty())  return;     // empty不处理
     if(IsBlank(text))  return;      // 若复制的全是空白字符，则不处理
 
     if( ui->list->count() >= MAX_ROW)
@@ -156,8 +157,6 @@ void QClipper::addText()
                 box.setWindowTitle(tr("重复！"));
                 box.setText("当前文本已经在剪贴板");
                 box.setWindowFlags(Qt::WindowStaysOnTopHint);
-                //                消息窗口弹出到桌面最前，只能用WindowStaysOnTopHint
-                //                        box.activateWindow();
                 box.exec();
                 return;
             }
@@ -182,10 +181,15 @@ void QClipper::ClickText()
 {
     QObject* obj = sender();
     QListWidget* w = qobject_cast<QListWidget*>(obj);
-    QString ItemText = w->currentItem()->text().remove(0,3);
+
+    QString ItemText;
+    if(obj->objectName()=="list")
+        ItemText = w->currentItem()->text().remove(0,3);
+    else ItemText = w->currentItem()->text();
+
     qApp->clipboard()->blockSignals(true);  //很关键，防止下一句代码中剪贴板发出dataChange信号
     QSound::play(":/Sound/Sound/MouseClick.wav");
-    if(m_MultiSel)  //多选模式不会最小化窗口
+    if(m_MultiSel)      //多选模式不会最小化窗口
     {
         w->setSelectionMode(QAbstractItemView::ExtendedSelection);
         MultiText+=ItemText;
@@ -198,7 +202,7 @@ void QClipper::ClickText()
     }
 }
 
-void QClipper::LoadText()
+void QClipper::LoadSaveText()
 {
     StoredFile = new QFile(this);
 
@@ -226,8 +230,8 @@ void QClipper::SetAutoRun(bool on)
                                  QSettings::NativeFormat);
     //开机启动
     if (on)
-    {   reg->setValue("QClipper","D:\\Build_My_Projet\\QClipper_static\\release\\QClipper.exe");
-        //        qDebug()<<"value: "<<reg->value("QClipper").toString();
+    {
+        reg->setValue("QClipper","D:\\Build_My_Projet\\QClipper_static\\release\\QClipper.exe");
     }
     else
     {
@@ -251,7 +255,6 @@ bool QClipper::IsBlank(QString text)
 void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
 {
     Q_UNUSED(pos);
-//    qDebug()<<pos.x()<<"  "<<pos.y();
     QMenu menu;
     menu.addAction(ui->LoadTheme);
     menu.addAction(ui->Clear);
@@ -317,14 +320,11 @@ void QClipper::on_Export_triggered()
 {
     if(hasText)
     {
-        //        QString saveFile = QFileDialog::getSaveFileName(0, "导出剪贴板记录",
-        //                                                        "export",
-        //                                                        tr("导出文件(*.txt)"));
         f = new QFile(this);
         QDir::setCurrent(QCoreApplication::applicationDirPath());
         f->setFileName("save.txt");
         QTextStream write(f);
-        if(! f->open(QIODevice::WriteOnly) )    // 加这句才生成export.txt
+        if(! f->open(QIODevice::WriteOnly) )    // 加这句才生成 save.txt
         {
             QMessageBox::warning(this,"导出到常用文本时出错",f->errorString());
             return;
@@ -480,7 +480,7 @@ void QClipper::on_AddTemplate_triggered()
 void QClipper::on_Save_triggered()
 {
     if(v.size()==0)     return;
-    saveText = ui->list->currentItem()->text();
+    saveText = ui->list->currentItem()->text().remove(0,3);
     QSound::play(":/Sound/Sound/Save.wav");
     QListWidgetItem* saveItem = new QListWidgetItem(0);
     saveItem->setText(saveText);
