@@ -4,12 +4,13 @@
 SaveCmd::SaveCmd(QListWidget* w)
 {
     widget = w;
+    for(int i=0; i<widget->count(); i++)
+        list<<widget->item(i)->text();
 }
 
 void SaveCmd::undo()
 {
-    QListWidgetItem* item= widget->takeItem(0);
-    delete item;
+    widget->addItems(list);
     QSound::play(":/Sound/Sound/Undo.wav");
 }
 

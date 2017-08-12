@@ -816,6 +816,9 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    <property name="text">
     <string>加载主题</string>
    </property>
+   <property name="toolTip">
+    <string>加载程序的颜色主题</string>
+   </property>
   </action>
   <action name="Clear">
    <property name="icon">
@@ -824,6 +827,9 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    </property>
    <property name="text">
     <string>清空</string>
+   </property>
+   <property name="toolTip">
+    <string>清空剪贴历史</string>
    </property>
   </action>
   <action name="Setting">
@@ -834,16 +840,6 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    </property>
    <property name="text">
     <string>设置</string>
-   </property>
-  </action>
-  <action name="Export">
-   <property name="icon">
-    <iconset>
-     <normalon>:/Icon/export.png</normalon>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>导出</string>
    </property>
   </action>
   <action name="About_QClipper">
@@ -875,6 +871,9 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    <property name="text">
     <string>还原</string>
    </property>
+   <property name="toolTip">
+    <string>显示程序</string>
+   </property>
   </action>
   <action name="AddTemplate">
    <property name="icon">
@@ -896,7 +895,7 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>保存</string>
    </property>
    <property name="toolTip">
-    <string>保存到常用</string>
+    <string>保存到常用文本,写入文件</string>
    </property>
   </action>
   <action name="clearMult">
@@ -918,6 +917,9 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    <property name="text">
     <string>重启</string>
    </property>
+   <property name="toolTip">
+    <string>重启程序</string>
+   </property>
   </action>
   <action name="Undo">
    <property name="icon">
@@ -926,7 +928,10 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     </iconset>
    </property>
    <property name="text">
-    <string>撤销保存</string>
+    <string>撤销清空</string>
+   </property>
+   <property name="toolTip">
+    <string>恢复清空的文本</string>
    </property>
   </action>
   <action name="Help">
@@ -957,6 +962,9 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    </property>
    <property name="text">
     <string>删除</string>
+   </property>
+   <property name="toolTip">
+    <string>从常用文本列表和文件中删除</string>
    </property>
   </action>
  </widget>

@@ -12,6 +12,7 @@ public:
     void redo();
 private:
     QListWidget* widget;
+    QStringList list;
 };
 
 #endif // SAVECMD_H

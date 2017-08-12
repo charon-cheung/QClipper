@@ -261,7 +261,6 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.addAction(ui->Clear);
     menu.addAction(ui->Save);
     menu.addAction(ui->Undo);
-    menu.addAction(ui->Export);
     menu.addAction(ui->AddTemplate);
     menu.addAction(ui->Setting);
     menu.addAction(ui->Close);
@@ -291,6 +290,9 @@ void QClipper::on_LoadTheme_triggered()
 
 void QClipper::on_Clear_triggered()
 {
+    SaveCmd *save_cmd = new SaveCmd(ui->list);
+    undoStack->push(save_cmd);
+
     ui->list->clear();
     v.clear();
     qApp->clipboard()->clear(QClipboard::Clipboard);
@@ -316,8 +318,8 @@ void QClipper::on_Setting_triggered()
     wakeup = m_setting->GetWakeUp();
 
 }
-//需要优化，目前实际是每次新建文件后重置，全部写入文本
-void QClipper::on_Export_triggered()
+
+void QClipper::Export()
 {
     if(hasText)
     {
@@ -325,17 +327,13 @@ void QClipper::on_Export_triggered()
         QDir::setCurrent(QCoreApplication::applicationDirPath());
         f->setFileName("save.txt");
         QTextStream write(f);
-        if(! f->open(QIODevice::WriteOnly) )    // 加这句才生成 save.txt
+        if(! f->open(QIODevice::WriteOnly | QIODevice::Append) ) // 加这句才生成 save.txt
         {
-            QMessageBox::warning(this,"导出到常用文本时出错",f->errorString());
+            QMessageBox::warning(this,"追加到常用文本时出错",f->errorString());
             return;
         }
         write.setCodec("UTF-8");
-        for(int i=0; i<ui->stored->count(); i++)
-        {
-            QString text = ui->stored->item(i)->text();
-            write<<text<<"\n";
-        }
+        write<<saveText<<"\n";
         f->close();
     }
     delete f;
@@ -489,8 +487,7 @@ void QClipper::on_Save_triggered()
     ui->stored->item(0)->setFont(*font);
     delete saveItem;
 
-    SaveCmd *save_cmd = new SaveCmd(ui->stored);
-    undoStack->push(save_cmd);
+    this->Export();
 }
 
 void QClipper::on_clearMult_triggered()
@@ -515,12 +512,12 @@ void QClipper::on_Undo_triggered()
 
 void QClipper::on_Help_triggered()
 {
-    QMessageBox::information(0,"使用说明",
+    QMessageBox::information(this,"使用说明",
                              "Alt+Shift+W : 呼唤                       \n\n"
                              "Alt+Shift+D : 隐藏                       \n\n"
                              "在托盘点击右键可以退出                   \n\n"
                              "可用鼠标点击和键盘选择                   \n\n"
-                             "可保存剪贴文本到常用再导出               \n\n"
+                             "可保存剪贴记录到常用文本               \n\n"
                              "在exe所在文件夹建save.text可以保存         \n"
                              "常用的剪贴文本                               ");
 }
@@ -532,11 +529,11 @@ void QClipper::on_Close_triggered()
         this->hide();
         return;
     }
-    QMessageBox msg;
-    msg.setWindowTitle(tr("请注意！"));
-    msg.setText(tr("选择需要的操作"));
+    QMessageBox msg(this);
+    msg.resize(600,200);
+    msg.setText(tr("      请选择需要的操作"));
 
-    QPushButton* SetMin = msg.addButton(tr("最小化到托盘"), QMessageBox::ActionRole);
+    QPushButton* SetMin = msg.addButton(tr("最小化"), QMessageBox::ActionRole);
     QPushButton* Exit = msg.addButton(tr("退出"), QMessageBox::ActionRole);
     QPushButton* Cancel = msg.addButton(tr("取消"), QMessageBox::ActionRole);
 //    不显示最大化和最小化按钮,必须用两行完成
@@ -565,7 +562,7 @@ void QClipper::on_Delete_triggered()
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     file->setFileName("save.txt");
     QTextStream write(file);
-
+    //打开方式是只写和覆盖已有内容,QIODevice::Truncate会直接将文件内容清空,不能只用Truncate
     if(! file->open(QIODevice::WriteOnly | QIODevice::Truncate) )
     {
         QMessageBox::warning(this,"删除常用文本时出错",file->errorString());

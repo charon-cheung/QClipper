@@ -97,7 +97,7 @@ private slots:
 
     void on_Setting_triggered();
 
-    void on_Export_triggered();
+    void Export();
 
     void on_About_QClipper_triggered();
 
