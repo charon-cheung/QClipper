@@ -14,7 +14,7 @@ TEMPLATE = app
 RC_ICONS = qclipper.ico
 
 DESTDIR = bin
-
+RC_FILE = app.rc
 CONFIG(debug, debug | release){
     compiled = debug
 }
@@ -59,3 +59,6 @@ FORMS += \
 
 RESOURCES += \
     Res.qrc\
+
+DISTFILES += \
+    app.rc

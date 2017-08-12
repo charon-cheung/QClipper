@@ -209,9 +209,12 @@ void QClipper::LoadSaveText()
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     StoredFile->setFileName("save.txt");
     QTextStream load(StoredFile);
-    if(!StoredFile->open(QIODevice::ReadOnly))
+    if(!StoredFile->exists())
+        QMessageBox::information(this, "加载保存的文本时出错","没有在bin文件夹发现save.text, 已经自动创建文件");
+
+    if(!StoredFile->open(QIODevice::ReadWrite))
     {
-        QMessageBox::warning(this, "加载保存的文本出错",StoredFile->errorString());
+        QMessageBox::warning(this, "加载保存的文本时出错",StoredFile->errorString());
         return;
     }
     load.setCodec("UTF-8");
@@ -342,7 +345,7 @@ void QClipper::Export()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(this, "QClipper 1.1", "QClipper是我自己开发的一个剪贴板工具。");
+    QMessageBox::about(this, "QClipper 1.2", "QClipper是我自己开发的一个剪贴板工具");
 }
 
 void QClipper::changeEvent(QEvent *e)
