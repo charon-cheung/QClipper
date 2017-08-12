@@ -62,3 +62,5 @@ RESOURCES += \
 
 DISTFILES += \
     app.rc
+
+#RC_FILE += app.rc
