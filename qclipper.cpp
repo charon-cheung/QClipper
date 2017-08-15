@@ -93,7 +93,7 @@ void QClipper::SetTray()
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
-    trayIcon->setToolTip("QClipper 1.1");
+    trayIcon->setToolTip("QClipper 1.3");
     trayIcon->setContextMenu(trayMenu);
     trayIcon->showMessage("托盘标题", "托盘内容", QSystemTrayIcon::Information, 3000);
     trayIcon->show();
@@ -259,8 +259,8 @@ bool QClipper::IsBlank(QString text)
 void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
 {
     Q_UNUSED(pos);
-    QMenu menu;
-    menu.addAction(ui->LoadTheme);
+
+    this->LoadChildMenu();
     menu.addAction(ui->Clear);
     menu.addAction(ui->Save);
     menu.addAction(ui->Undo);
@@ -274,11 +274,34 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.exec(QCursor::pos());      // 菜单跟随鼠标位置
 }
 
-void QClipper::on_LoadTheme_triggered()
+void QClipper::LoadChildMenu()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "","",
-                                                    tr("样式表文件(*.qss)") );
-    if(fileName.isEmpty())  return;   // 不加这句，若选取消，窗口会恢复为默认样式
+    if(m)   return; // 否则每次点右键都会添加二级菜单
+    m = menu.addMenu(QIcon(":/Icon/theme.png"),"加载主题");
+
+    QAction* darcula = m->addAction("darcula");
+    QAction* black = m->addAction("black");
+    QAction* white = m->addAction("white");
+
+    darcula->setObjectName("darcula");
+    black->setObjectName("black");
+    white->setObjectName("white");
+
+    connect(darcula,SIGNAL(triggered(bool)), this, SLOT(ReadTheme()));
+    connect(black,SIGNAL(triggered(bool)), this, SLOT(ReadTheme()));
+    connect(white,SIGNAL(triggered(bool)), this, SLOT(ReadTheme()));
+}
+
+void QClipper::ReadTheme()
+{
+    QString fileName = QApplication::applicationDirPath() + "/Style/";
+    if(sender()->objectName()=="darcula")
+        fileName = fileName+"darcula.qss";
+    else if(sender()->objectName()=="black")
+        fileName = fileName+"black.qss";
+    else if(sender()->objectName()=="white")
+        fileName = fileName+"white.qss";
+
     QFile f(fileName);
     QTextStream read(&f);
     if(! f.open(QIODevice::ReadOnly))
@@ -345,7 +368,7 @@ void QClipper::Export()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(this, "QClipper 1.2", "QClipper是我自己开发的一个剪贴板工具");
+    QMessageBox::about(this, "QClipper 1.3", "QClipper是我自己开发的一个剪贴板工具");
 }
 
 void QClipper::changeEvent(QEvent *e)

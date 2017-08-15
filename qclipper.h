@@ -64,6 +64,8 @@ private:
     QString minimize;
     QString wakeup;
 
+    QMenu menu;
+    QMenu *m=NULL;
     QFile* StoredFile;
     QString saveText;
     QStringList loadText;
@@ -91,7 +93,9 @@ private slots:
 
     void on_list_customContextMenuRequested(const QPoint &pos);
 
-    void on_LoadTheme_triggered();
+    void LoadChildMenu();
+
+    void ReadTheme();
 
     void on_Clear_triggered();
 
