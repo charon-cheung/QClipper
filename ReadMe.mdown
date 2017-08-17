@@ -17,7 +17,9 @@
 14. 改变QClipboard的信号为dataChanged后，Ubuntu平台已经解决剪贴板问题,删除了安装的另一个剪贴板工具后，win10平台也没有了复制的问题
 
 #### 发现的问题：
-1. 更改信号之前，复制文本到剪贴板有时会失败，找不到原因，可能是Qt的bug  
-   参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
+1. 只有在开发所用电脑上，复制文本到剪贴板有时会失败，找不到原因，可能是Qt的bug.  参考：[Intermittent clipboard mimedata copy failures on Windows](https://bugreports.qt.io/browse/QTBUG-27097)
 2. 每次设定透明度后，下次打开“设置”，透明度又重置为1
 3. 文本的操作相关代码重复性高，有待优化,目前LoadSaveText(),Export()和on_Delete_triggered()三个函数涉及文本操作
+4. 两个撤销用了两个QUndoStack,能否只用一个？
+5. 两个撤销动作会改变文本的字体
+5. 重新规范程序版本信息

@@ -18,6 +18,7 @@
         <file>Icon/Help.png</file>
         <file>Icon/close.png</file>
         <file>Icon/delete.png</file>
+        <file>Icon/undelete.png</file>
     </qresource>
     <qresource prefix="/Setting">
         <file>Setting/behavior.png</file>

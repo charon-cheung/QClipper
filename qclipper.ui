@@ -967,6 +967,18 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>从常用文本列表和文件中删除</string>
    </property>
   </action>
+  <action name="Undelete">
+   <property name="icon">
+    <iconset resource="Res.qrc">
+     <normaloff>:/Icon/undelete.png</normaloff>:/Icon/undelete.png</iconset>
+   </property>
+   <property name="text">
+    <string>撤销删除</string>
+   </property>
+   <property name="toolTip">
+    <string>撤销删除的常用文本</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

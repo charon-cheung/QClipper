@@ -1,20 +1,20 @@
-#include "savecmd.h"
+#include "clearcmd.h"
 #include <QDebug>
 #include <QSound>
-SaveCmd::SaveCmd(QListWidget* w)
+ClearCmd::ClearCmd(QListWidget* w)
 {
     widget = w;
     for(int i=0; i<widget->count(); i++)
         list<<widget->item(i)->text();
 }
 
-void SaveCmd::undo()
+void ClearCmd::undo()
 {
     widget->addItems(list);
     QSound::play(":/Sound/Sound/Undo.wav");
 }
 
-void SaveCmd::redo()
+void ClearCmd::redo()
 {
     qDebug()<<"redo";
 }

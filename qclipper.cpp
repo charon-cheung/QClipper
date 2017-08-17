@@ -24,7 +24,6 @@ QClipper::QClipper(QWidget *parent) :
     QSound::play(":/Sound/Sound/Run.wav");
     QCursor c;
     StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x()-W/2,c.pos().y()-H/2, W,H));
-    undoStack = new QUndoStack(this);
 
     //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
     QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
@@ -325,8 +324,9 @@ void QClipper::ReadTheme()
 
 void QClipper::on_Clear_triggered()
 {
-    SaveCmd *save_cmd = new SaveCmd(ui->list);
-    undoStack->push(save_cmd);
+    undoStack = new QUndoStack(this);
+    ClearCmd *clear_cmd = new ClearCmd(ui->list);
+    undoStack->push(clear_cmd);
 
     ui->list->clear();
     v.clear();
@@ -558,6 +558,7 @@ void QClipper::on_Reboot_triggered()
 void QClipper::on_Undo_triggered()
 {
     undoStack->undo();
+//    undoStack->command(0)->undo();
 }
 
 void QClipper::on_Help_triggered()
@@ -605,6 +606,10 @@ void QClipper::on_Close_triggered()
 
 void QClipper::on_Delete_triggered()
 {
+    undeleteStack = new QUndoStack(this);
+    DeleteCmd *delete_cmd = new DeleteCmd(ui->stored);
+    undeleteStack->push(delete_cmd);
+
     QString currentText = ui->stored->currentItem()->text();
     loadText.removeOne(currentText);
 
@@ -632,5 +637,11 @@ void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
     Q_UNUSED(pos);
     QMenu m;
     m.addAction(ui->Delete);
+    m.addAction(ui->Undelete);
     m.exec(QCursor::pos());
+}
+
+void QClipper::on_Undelete_triggered()
+{
+    undeleteStack->undo();
 }

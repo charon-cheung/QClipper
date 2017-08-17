@@ -44,13 +44,15 @@ SOURCES += \
         qclipper.cpp \
     template.cpp \
     setting.cpp \
-    savecmd.cpp
+    clearcmd.cpp \
+    deletecmd.cpp
 
 HEADERS += \
         qclipper.h \
     template.h \
     setting.h \
-    savecmd.h
+    clearcmd.h \
+    deletecmd.h
 
 FORMS += \
         qclipper.ui \

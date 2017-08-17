@@ -18,7 +18,8 @@
 
 #include <template.h>
 #include <setting.h>
-#include <savecmd.h>
+#include <clearcmd.h>
+#include <deletecmd.h>
 
 namespace Ui {
 class QClipper;
@@ -69,7 +70,7 @@ private:
     QFile* StoredFile;
     QString saveText;
     QStringList loadText;
-    QUndoStack *undoStack;
+    QUndoStack *undoStack, *undeleteStack;
     QPropertyAnimation *animation;
     QString dirPath;
     enum{
@@ -132,6 +133,8 @@ private slots:
     void on_Delete_triggered();
 
     void on_stored_customContextMenuRequested(const QPoint &pos);
+
+    void on_Undelete_triggered();
 
 protected:
     void changeEvent(QEvent *e);

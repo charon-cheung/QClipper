@@ -1,13 +1,13 @@
-#ifndef SAVECMD_H
-#define SAVECMD_H
+#ifndef CLEARCMD_H
+#define CLEARCMD_H
 #include <QUndoCommand>
 #include <QListWidget>
 #include <QListWidgetItem>
 
-class SaveCmd : public QUndoCommand
+class ClearCmd : public QUndoCommand
 {
 public:
-    SaveCmd(QListWidget* w);
+    ClearCmd(QListWidget* w);
     void undo();
     void redo();
 private:
