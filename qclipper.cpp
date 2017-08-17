@@ -102,7 +102,7 @@ void QClipper::SetTray()
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
-    trayIcon->setToolTip("QClipper 1.3");
+    trayIcon->setToolTip("QClipper 1.4");
     trayIcon->setContextMenu(trayMenu);
     trayIcon->showMessage("托盘标题", "托盘内容", QSystemTrayIcon::Information, 3000);
     trayIcon->show();
@@ -377,7 +377,7 @@ void QClipper::Export()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(this, "QClipper 1.3", "QClipper是我自己开发的一个剪贴板工具");
+    QMessageBox::about(this, "QClipper 1.4", "QClipper是我自己开发的一个剪贴板工具");
 }
 
 void QClipper::changeEvent(QEvent *e)
