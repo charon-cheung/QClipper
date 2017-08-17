@@ -71,7 +71,7 @@ private:
     QStringList loadText;
     QUndoStack *undoStack;
     QPropertyAnimation *animation;
-
+    QString dirPath;
     enum{
         MAX_ROW = 10,
         FONT_SIZE = 24,
@@ -107,8 +107,9 @@ private slots:
 
     void TrayIconClicked(QSystemTrayIcon::ActivationReason reason);
 
-    void on_ShowNormal_triggered();
+    void on_ShowCursor();
     void on_ShowMini();
+    void on_ShowCenter();
 
     void on_Exit_triggered();
 

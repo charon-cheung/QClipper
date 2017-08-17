@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QSound>
 #include <QProcess>
+#include <QDesktopWidget>
 
 QClipper::QClipper(QWidget *parent) :
     QDialog(parent),
@@ -32,6 +33,7 @@ QClipper::QClipper(QWidget *parent) :
     }
     connect(qApp->clipboard(), SIGNAL(dataChanged()),
             this, SLOT(addText())  );
+    connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
 }
 
 QClipper::~QClipper()
@@ -79,6 +81,13 @@ void QClipper::InitUi()
     m_KeepMin = false;      //默认关闭时不会最小化
     m_show = false;         // 不要总是显示
     ui->ShowNormal->setEnabled(false);
+
+    dirPath=QApplication::applicationDirPath();
+    QDir d(dirPath);
+    if(!d.entryList().contains("Style"))
+    {
+        d.mkdir("Style");
+    }
 }
 
 void QClipper::SetTray()
@@ -109,7 +118,7 @@ void QClipper::SetShortCut()
     wakeup= "Alt+Shift+W";
     QxtGlobalShortcut* WakeUp = new QxtGlobalShortcut(this);
     WakeUp->setShortcut(QKeySequence("Alt+Shift+W"));
-    connect(WakeUp, SIGNAL(activated()), this, SLOT(on_ShowNormal_triggered()) );
+    connect(WakeUp, SIGNAL(activated()), this, SLOT(on_ShowCursor()) );
 
     QxtGlobalShortcut* MiNi = new QxtGlobalShortcut(this);
     MiNi->setShortcut(QKeySequence("Alt+Shift+D"));
@@ -294,7 +303,7 @@ void QClipper::LoadChildMenu()
 
 void QClipper::ReadTheme()
 {
-    QString fileName = QApplication::applicationDirPath() + "/Style/";
+    QString fileName = dirPath + "/Style/";
     if(sender()->objectName()=="darcula")
         fileName = fileName+"darcula.qss";
     else if(sender()->objectName()=="black")
@@ -385,14 +394,15 @@ void QClipper::TrayIconClicked(QSystemTrayIcon::ActivationReason reason)
     {
     case QSystemTrayIcon::DoubleClick :
         this->setWindowState(Qt::WindowActive);
-        this->show();
+        if(ui->ShowNormal->isEnabled())
+            this->on_ShowCenter();
         break;
     default:
         break;
     }
 }
 
-void QClipper::on_ShowNormal_triggered()
+void QClipper::on_ShowCursor()
 {
     //两行的顺序不能交换
     if(this->size() != QSize(0,0))      return;
@@ -410,6 +420,20 @@ void QClipper::on_ShowMini()
     QSound::play(":/Sound/Sound/Min.wav");
     StartAnimation(QRect(this->pos().x(), this->pos().y(), W,H), QRect(0,0, 0,0));
     ui->ShowNormal->setEnabled(true);
+}
+
+void QClipper::on_ShowCenter()
+{
+    if(this->size() != QSize(0,0))      return;
+    this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+    this->showNormal();
+    QSound::play(":/Sound/Sound/Run.wav");
+
+    QDesktopWidget *desk=QApplication::desktop();
+    int w = desk->screenGeometry().width();
+    int h = desk->screenGeometry().height();
+    StartAnimation(QRect(0,0,0,0), QRect(w/2-W/2, h/2-H/2, W,H));
+    ui->ShowNormal->setEnabled(false);
 }
 
 void QClipper::on_Exit_triggered()
