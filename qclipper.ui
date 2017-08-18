@@ -921,19 +921,6 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>重启程序</string>
    </property>
   </action>
-  <action name="Undo">
-   <property name="icon">
-    <iconset>
-     <normalon>:/Icon/undo.png</normalon>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>撤销清空</string>
-   </property>
-   <property name="toolTip">
-    <string>恢复清空的文本</string>
-   </property>
-  </action>
   <action name="Help">
    <property name="icon">
     <iconset>
@@ -965,18 +952,6 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
    </property>
    <property name="toolTip">
     <string>从常用文本列表和文件中删除</string>
-   </property>
-  </action>
-  <action name="Undelete">
-   <property name="icon">
-    <iconset resource="Res.qrc">
-     <normaloff>:/Icon/undelete.png</normaloff>:/Icon/undelete.png</iconset>
-   </property>
-   <property name="text">
-    <string>撤销删除</string>
-   </property>
-   <property name="toolTip">
-    <string>撤销删除的常用文本</string>
    </property>
   </action>
  </widget>

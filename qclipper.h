@@ -70,7 +70,9 @@ private:
     QFile* StoredFile;
     QString saveText;
     QStringList loadText;
-    QUndoStack *undoStack, *undeleteStack;
+    QUndoStack *undoStack;
+    QAction *UnClear, *UnDelete;
+
     QPropertyAnimation *animation;
     QString dirPath;
     enum{
@@ -124,8 +126,6 @@ private slots:
 
     void on_Reboot_triggered();
 
-    void on_Undo_triggered();
-
     void on_Help_triggered();
 
     void on_Close_triggered();
@@ -133,8 +133,6 @@ private slots:
     void on_Delete_triggered();
 
     void on_stored_customContextMenuRequested(const QPoint &pos);
-
-    void on_Undelete_triggered();
 
 protected:
     void changeEvent(QEvent *e);

@@ -33,6 +33,13 @@ QClipper::QClipper(QWidget *parent) :
     connect(qApp->clipboard(), SIGNAL(dataChanged()),
             this, SLOT(addText())  );
     connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
+
+    undoStack = new QUndoStack(this);
+    //两个action其实一样
+    UnClear = undoStack->createUndoAction(this,"撤销清空");
+    UnClear->setIcon(QIcon(":/Icon/unclear.png"));
+    UnDelete= undoStack->createUndoAction(this,"撤销删除");
+    UnDelete->setIcon(QIcon(":/Icon/undelete.png"));
 }
 
 QClipper::~QClipper()
@@ -271,7 +278,7 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     this->LoadChildMenu();
     menu.addAction(ui->Clear);
     menu.addAction(ui->Save);
-    menu.addAction(ui->Undo);
+    menu.addAction(UnClear);
     menu.addAction(ui->AddTemplate);
     menu.addAction(ui->Setting);
     menu.addAction(ui->Close);
@@ -324,7 +331,8 @@ void QClipper::ReadTheme()
 
 void QClipper::on_Clear_triggered()
 {
-    undoStack = new QUndoStack(this);
+//    动作执行的时候创建此子类的对象，并放入QUndoStack
+
     ClearCmd *clear_cmd = new ClearCmd(ui->list);
     undoStack->push(clear_cmd);
 
@@ -555,12 +563,6 @@ void QClipper::on_Reboot_triggered()
     qApp->quit();
 }
 
-void QClipper::on_Undo_triggered()
-{
-    undoStack->undo();
-//    undoStack->command(0)->undo();
-}
-
 void QClipper::on_Help_triggered()
 {
     QMessageBox::information(this,"使用说明",
@@ -606,9 +608,8 @@ void QClipper::on_Close_triggered()
 
 void QClipper::on_Delete_triggered()
 {
-    undeleteStack = new QUndoStack(this);
     DeleteCmd *delete_cmd = new DeleteCmd(ui->stored);
-    undeleteStack->push(delete_cmd);
+    undoStack->push(delete_cmd);
 
     QString currentText = ui->stored->currentItem()->text();
     loadText.removeOne(currentText);
@@ -637,11 +638,6 @@ void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
     Q_UNUSED(pos);
     QMenu m;
     m.addAction(ui->Delete);
-    m.addAction(ui->Undelete);
+    m.addAction(UnDelete);
     m.exec(QCursor::pos());
-}
-
-void QClipper::on_Undelete_triggered()
-{
-    undeleteStack->undo();
 }

@@ -14,11 +14,11 @@
         <file>Icon/AlwaysShow.png</file>
         <file>Icon/about.png</file>
         <file>Icon/qclipper.png</file>
-        <file>Icon/undo.png</file>
         <file>Icon/Help.png</file>
         <file>Icon/close.png</file>
         <file>Icon/delete.png</file>
         <file>Icon/undelete.png</file>
+        <file>Icon/unclear.png</file>
     </qresource>
     <qresource prefix="/Setting">
         <file>Setting/behavior.png</file>
