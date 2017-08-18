@@ -182,7 +182,10 @@ void QClipper::addText()
     for(int i=0; i<index+1;i++)
     {
         ui->list->item(i)->setText(QString("%1. ").arg(i+1) +
-                                   ui->list->item(i)->text().remove(0,3));
+                         ui->list->item(i)->text().remove(0,3));
+        if(i>=9)
+            ui->list->item(i)->setText(QString("%1.").arg(i+1) +
+                         ui->list->item(i)->text().remove(0,4));
     }
     //每个item的样式
     hasText = true;
@@ -279,6 +282,8 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     menu.addAction(ui->Clear);
     menu.addAction(ui->Save);
     menu.addAction(UnClear);
+    if(ui->list->count()!=0)
+        UnClear->setDisabled(true);
     menu.addAction(ui->AddTemplate);
     menu.addAction(ui->Setting);
     menu.addAction(ui->Close);
@@ -539,6 +544,16 @@ void QClipper::on_Save_triggered()
     if(v.size()==0)     return;
     saveText = ui->list->currentItem()->text().remove(0,3);
     QSound::play(":/Sound/Sound/Save.wav");
+
+    for(int i=0;i<ui->stored->count();i++)
+    {
+        if(saveText==ui->stored->item(i)->text())
+        {
+            QMessageBox::information(this,"重复!","常用文本中已经存在!");
+            return;
+        }
+        else continue;
+    }
     QListWidgetItem* saveItem = new QListWidgetItem(0);
     saveItem->setText(saveText);
     ui->stored->insertItem(0, saveText);
