@@ -88,7 +88,7 @@ private:
 private slots:
     void addText();
     void ClickText();
-    void LoadSaveText();
+    void LoadSaveText();    //加载常用的文本项
 
     void SetAutoRun(bool on);
 

@@ -2,6 +2,7 @@
 #define DELETECMD_H
 #include <QUndoCommand>
 #include <QListWidget>
+#include "qclipper.h"
 
 class DeleteCmd : public QUndoCommand
 {

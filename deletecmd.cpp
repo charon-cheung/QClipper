@@ -19,7 +19,7 @@ void DeleteCmd::undo()
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     f->setFileName("save.txt");
     QTextStream write(f);
-    if(! f->open(QIODevice::WriteOnly | QIODevice::Append) ) // 加这句才生成 save.txt
+    if(!f->open(QIODevice::WriteOnly | QIODevice::Append) )
     {
         //如何使用主窗口的样式?
         QMessageBox::warning(0,"恢复到常用文本时出错",f->errorString());

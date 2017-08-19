@@ -30,10 +30,8 @@ public:
     bool CheckSame;
     bool GetCheckSame();
     bool GetMultiSel();
-    bool GetCheckMin();
-    QString GetWakeUp();
-    QString GetMinimize();
     qreal GetOpacity();
+
 private slots:
     void on_Yes_clicked();
 
@@ -51,10 +49,6 @@ private:
     QStandardItemModel *model;
     int SliderValue;
     qreal opacity;
-//    QString minimize;
-//    QString wakeup;
-protected:
-    bool eventFilter(QObject *obj, QEvent *e);
 };
 
 #endif // SETTING_H

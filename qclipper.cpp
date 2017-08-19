@@ -16,23 +16,14 @@ QClipper::QClipper(QWidget *parent) :
     ui(new Ui::QClipper)
 {
     ui->setupUi(this);
+
     this->InitUi();
     this->SetTray();
     this->SetAutoRun(true);     //开机启动
     this->SetShortCut();
-    LoadSaveText();     //  加载常用的文本项
+    this->LoadSaveText();
+    this->on_ShowCenter();
     QSound::play(":/Sound/Sound/Run.wav");
-    QCursor c;
-    StartAnimation(QRect(0,0, 0,0), QRect(c.pos().x()-W/2,c.pos().y()-H/2, W,H));
-
-    //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
-    QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
-    foreach (QListWidget* w, ListWidget) {
-        connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
-    }
-    connect(qApp->clipboard(), SIGNAL(dataChanged()),
-            this, SLOT(addText())  );
-    connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
 
     undoStack = new QUndoStack(this);
     //两个action其实一样
@@ -40,6 +31,15 @@ QClipper::QClipper(QWidget *parent) :
     UnClear->setIcon(QIcon(":/Icon/unclear.png"));
     UnDelete= undoStack->createUndoAction(this,"撤销删除");
     UnDelete->setIcon(QIcon(":/Icon/undelete.png"));
+
+    //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
+    QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
+    foreach (QListWidget* w, ListWidget)
+        connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
+
+    connect(qApp->clipboard(), SIGNAL(dataChanged()),
+            this, SLOT(addText())  );
+    connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
 }
 
 QClipper::~QClipper()
@@ -108,7 +108,7 @@ void QClipper::SetTray()
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
-    trayIcon->setToolTip("QClipper 1.4");
+    trayIcon->setToolTip("QClipper 1.5");
     trayIcon->setContextMenu(trayMenu);
     trayIcon->showMessage("托盘标题", "托盘内容", QSystemTrayIcon::Information, 3000);
     trayIcon->show();
@@ -145,7 +145,8 @@ void QClipper::addText()
     qApp->clipboard()->blockSignals(false);   //解除点击和按键盘时的信号封锁
     QString text=qApp->clipboard()->text(QClipboard::Clipboard);
 //    QString text = qApp->clipboard()->mimeData()->text();
-    qDebug()<<"复制到剪贴板的文本: "<<text<<qrand()%50;
+//    if(!text.isEmpty())
+//    qDebug()<<"复制的文本: "<<text<<qrand()%50;
     if(text.isEmpty())  return;     // empty不处理
     if(IsBlank(text))  return;      // 若复制的全是空白字符，则不处理
 
@@ -156,9 +157,7 @@ void QClipper::addText()
     }
     //加索引，例如： 1.
     int index = ui->list->count();
-
-    QString ItemText;
-    ItemText = QString::number( index +1 ) + ". " + text;
+    QString ItemText = QString::number( index +1 ) + ". " + text;
     v.prepend(ItemText);
 
     if(m_CheckSame)
@@ -337,7 +336,6 @@ void QClipper::ReadTheme()
 void QClipper::on_Clear_triggered()
 {
 //    动作执行的时候创建此子类的对象，并放入QUndoStack
-
     ClearCmd *clear_cmd = new ClearCmd(ui->list);
     undoStack->push(clear_cmd);
 
@@ -359,11 +357,7 @@ void QClipper::on_Setting_triggered()
     m_CheckSame = m_setting->GetCheckSame();
     m_MultiSel = m_setting->GetMultiSel();
     opacity = m_setting->GetOpacity();
-    m_KeepMin = m_setting->GetCheckMin();
     this->setWindowOpacity(opacity);
-
-    minimize = m_setting->GetMinimize();
-    wakeup = m_setting->GetWakeUp();
 
 }
 
@@ -390,7 +384,7 @@ void QClipper::Export()
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(this, "QClipper 1.4", "QClipper是我自己开发的一个剪贴板工具");
+    QMessageBox::about(this, "QClipper 1.5", "QClipper是我自己开发的一个剪贴板工具");
 }
 
 void QClipper::changeEvent(QEvent *e)
@@ -441,7 +435,7 @@ void QClipper::on_ShowCenter()
     this->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
     this->showNormal();
     QSound::play(":/Sound/Sound/Run.wav");
-
+    //鼠标在哪个屏幕，就判断是哪个屏幕
     QDesktopWidget *desk=QApplication::desktop();
     int w = desk->screenGeometry().width();
     int h = desk->screenGeometry().height();
@@ -633,7 +627,7 @@ void QClipper::on_Delete_triggered()
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     file->setFileName("save.txt");
     QTextStream write(file);
-    //打开方式是只写和覆盖已有内容,QIODevice::Truncate会直接将文件内容清空,不能只用Truncate
+    //打开方式是只写和覆盖已有内容,QIODevice::Truncate会直接将文件内容清空,但不能只用Truncate
     if(! file->open(QIODevice::WriteOnly | QIODevice::Truncate) )
     {
         QMessageBox::warning(this,"删除常用文本时出错",file->errorString());

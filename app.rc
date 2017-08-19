@@ -24,13 +24,13 @@ BEGIN
         BEGIN
 
             VALUE "CompanyName", "Wiscom"
-            VALUE "FileDescription", "QClipper 1.4"
-            VALUE "FileVersion", "1.4.0.0"
+            VALUE "FileDescription", "QClipper 1.5"
+            VALUE "FileVersion", "1.5.0.0"
             VALUE "LegalCopyright", ""
             VALUE "InternalName", ""
             VALUE "OriginalFilename", "QClipper.exe"
             VALUE "ProductName", "QClipper"
-            VALUE "ProductVersion", "1.4.0.0"
+            VALUE "ProductVersion", "1.5.0.0"
 
         END
 
