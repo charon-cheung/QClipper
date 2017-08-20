@@ -158,8 +158,9 @@ void QClipper::addText()
     //加索引，例如： 1.
     int index = ui->list->count();
     QString ItemText = QString::number( index +1 ) + ". " + text;
+    if(ItemText.remove(0,3).left(4)=="file" || ItemText.remove(0,4).left(4)=="file")
+        return;     //排除复制文件名的情况
     v.prepend(ItemText);
-
     if(m_CheckSame)
     {
         for(int i=0; i<index;i++)
