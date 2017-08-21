@@ -651,3 +651,12 @@ void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
     m.addAction(UnDelete);
     m.exec(QCursor::pos());
 }
+
+void QClipper::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key()==Qt::Key_Escape)
+    {
+        qDebug()<<"escape pressed";
+        return;
+    }
+}

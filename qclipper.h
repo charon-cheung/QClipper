@@ -135,6 +135,7 @@ private slots:
     void on_stored_customContextMenuRequested(const QPoint &pos);
 
 protected:
+    void keyPressEvent(QKeyEvent *event);
     void changeEvent(QEvent *e);
     bool eventFilter(QObject *obj, QEvent *e);
 };
