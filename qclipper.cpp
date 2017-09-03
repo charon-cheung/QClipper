@@ -82,7 +82,6 @@ void QClipper::InitUi()
     //    if( this->locale().language() == QLocale::Chinese)
     //        qDebug()<<"当前使用中文";
     hasText = false;        //开始没有剪贴内容
-    m_MultiSel = false;     //默认关闭多选模式
     m_CheckSame = false;    //默认相同文本也插入记录
     m_KeepMin = false;      //默认关闭时不会最小化
     m_show = false;         // 不要总是显示
@@ -102,7 +101,6 @@ void QClipper::SetTray()
     trayMenu = new QMenu(this);
     trayMenu->addAction(ui->ShowNormal);
     trayMenu->addAction(ui->Reboot);
-    trayMenu->addAction(ui->Setting);
     trayMenu->addAction(ui->Exit);
 
     //    托盘图标
@@ -208,17 +206,10 @@ void QClipper::ClickText()
 
     qApp->clipboard()->blockSignals(true);  //很关键，防止下一句代码中剪贴板发出dataChange信号
     QSound::play(":/Sound/Sound/MouseClick.wav");
-    if(m_MultiSel)      //多选模式不会最小化窗口
-    {
-        w->setSelectionMode(QAbstractItemView::ExtendedSelection);
-        MultiText+=ItemText;
-        qApp->clipboard()->setText(MultiText);
-    }
-    else {
-        qApp->clipboard()->setText(ItemText, QClipboard::Clipboard);
-        if(m_show)  return;
-        this->on_ShowMini();
-    }
+
+    qApp->clipboard()->setText(ItemText, QClipboard::Clipboard);
+    if(m_show)  return;
+    this->on_ShowMini();
 }
 
 void QClipper::LoadSaveText()
@@ -286,11 +277,8 @@ void QClipper::on_list_customContextMenuRequested(const QPoint &pos)
     if(ui->list->count()!=0)
         UnClear->setDisabled(true);
     menu.addAction(ui->AddTemplate);
-    menu.addAction(ui->Setting);
     menu.addAction(ui->Close);
     menu.addAction(ui->Help);
-    if(m_MultiSel)
-        menu.addAction(ui->clearMult);
     menu.addAction(ui->About_QClipper);
     menu.exec(QCursor::pos());      // 菜单跟随鼠标位置
 }
@@ -347,20 +335,6 @@ void QClipper::on_Clear_triggered()
     qApp->clipboard()->clear(QClipboard::Selection);
     qApp->clipboard()->clear(QClipboard::FindBuffer);
     QSound::play(":/Sound/Sound/Clear.wav");
-}
-
-void QClipper::on_Setting_triggered()
-{
-    //    if(!m_setting)
-    m_setting = new Setting(0);
-    m_setting->show();
-    m_setting->setWindowFlags(Qt::WindowStaysOnTopHint);
-    if(m_setting->exec() != QDialog::Accepted)    return;
-    m_CheckSame = m_setting->GetCheckSame();
-    m_MultiSel = m_setting->GetMultiSel();
-    opacity = m_setting->GetOpacity();
-    this->setWindowOpacity(opacity);
-
 }
 
 void QClipper::Export()
@@ -463,13 +437,13 @@ bool QClipper::eventFilter(QObject *obj, QEvent *e)
             switch(keyEvent->key())
             {
             case Qt::Key_1 :
-                keyText = ui->list->item(0)->text().remove(0,3);
+                keyText = ui->list->item(0)->text().remove(0, 3);
                 break;
             case Qt::Key_2 :
-                keyText = ui->list->item(1)->text().remove(0,3);
+                keyText = ui->list->item(1)->text().remove(0, 3);
                 break;
             case Qt::Key_3 :
-                keyText = ui->list->item(2)->text().remove(0,3);
+                keyText = ui->list->item(2)->text().remove(0, 3);
                 break;
             case Qt::Key_4 :
                 keyText = ui->list->item(3)->text().remove(0,3);

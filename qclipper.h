@@ -17,7 +17,6 @@
 #include <QPropertyAnimation>
 
 #include <template.h>
-#include <setting.h>
 #include <clearcmd.h>
 #include <deletecmd.h>
 
@@ -54,10 +53,8 @@ private:
 
     int count;
     Template* tem;
-//    QPointer<Setting> m_setting;
-    Setting* m_setting;
+
     bool m_CheckSame;
-    bool m_MultiSel;
     bool m_show;
     bool m_KeepMin;
     qreal opacity;
@@ -101,8 +98,6 @@ private slots:
     void ReadTheme();
 
     void on_Clear_triggered();
-
-    void on_Setting_triggered();
 
     void Export();
 

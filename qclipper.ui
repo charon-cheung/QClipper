@@ -832,16 +832,6 @@ QStatusBar QLineEdit, QStatusBar QLineEdit:focus {
     <string>清空剪贴历史</string>
    </property>
   </action>
-  <action name="Setting">
-   <property name="icon">
-    <iconset>
-     <normalon>:/Icon/setting_gear.png</normalon>
-    </iconset>
-   </property>
-   <property name="text">
-    <string>设置</string>
-   </property>
-  </action>
   <action name="About_QClipper">
    <property name="icon">
     <iconset>
