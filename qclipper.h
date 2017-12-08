@@ -34,7 +34,8 @@ public:
 
 private:
     void InitUi();
-    void SetTray();
+    void InitOther();
+    void CreateTray();
     void SetShortCut();
     void StartAnimation(QRect begin, QRect end);
 private:

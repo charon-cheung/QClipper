@@ -10,6 +10,10 @@
 #include <QSound>
 #include <QProcess>
 #include <QDesktopWidget>
+#include <QSqlDatabase>
+#include <QSql>
+#include <QSqlQuery>
+#include <QSqlError>
 
 QClipper::QClipper(QWidget *parent) :
     QDialog(parent),
@@ -18,7 +22,8 @@ QClipper::QClipper(QWidget *parent) :
     ui->setupUi(this);
 
     this->InitUi();
-    this->SetTray();
+    this->InitOther();
+    this->CreateTray();
     this->SetAutoRun(true);     //开机启动
     this->SetShortCut();
     this->LoadSaveText();
@@ -33,13 +38,23 @@ QClipper::QClipper(QWidget *parent) :
     UnDelete->setIcon(QIcon(":/Icon/undelete.png"));
 
     //注意itemClicked和itemPressed的不同,itemClicked只识别鼠标左键
-    QList<QListWidget* > ListWidget = this->findChildren<QListWidget*>();
-    foreach (QListWidget* w, ListWidget)
+    foreach (QListWidget* w, findChildren<QListWidget*>())
         connect(w, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(ClickText())  );
 
-    connect(qApp->clipboard(), SIGNAL(dataChanged()),
-            this, SLOT(addText())  );
+    connect(qApp->clipboard(), SIGNAL(dataChanged()), this, SLOT(addText())  );
     connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
+
+    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
+    db.setHostName("localhost");
+    db.setDatabaseName("qclipper");
+    db.setUserName("root");
+    db.setPassword("123456");
+    if(!db.open())
+    {
+         qDebug()<<db.lastError();
+    }
+    else
+        qDebug()<<"mysql opened !";
 }
 
 QClipper::~QClipper()
@@ -55,8 +70,7 @@ void QClipper::InitUi()
     this->setMouseTracking(true);
     this->setWindowIcon(QIcon(":/Icon/QClipper"));
     this->setWindowFlags(Qt::FramelessWindowHint);
-    //    this->setWindowFlags(Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
-    this->setWindowTitle("QClipper 1.0");
+    this->setWindowTitle("QClipper 1.5");
 
     ui->filter->setGeometry(0,1, WIDTH, FILTER_H);
     ui->filter->setPlaceholderText("Filter");
@@ -73,14 +87,16 @@ void QClipper::InitUi()
     ui->stored->setFrameShape(QFrame::NoFrame);
     ui->stored->setGeometry(WIDTH+5, FILTER_H+1, WIDTH, HEIGHT+5);
     ui->stored->setContextMenuPolicy(Qt::CustomContextMenu);
+}
 
-    //    字体
+void QClipper::InitOther()
+{
+//    字体
     font = new QFont();
     font->setBold(true);
     font->setPixelSize(FONT_SIZE);
     font->setFamily("Inconsolata");
-    //    if( this->locale().language() == QLocale::Chinese)
-    //        qDebug()<<"当前使用中文";
+
     hasText = false;        //开始没有剪贴内容
     m_CheckSame = false;    //默认相同文本也插入记录
     m_KeepMin = false;      //默认关闭时不会最小化
@@ -95,14 +111,13 @@ void QClipper::InitUi()
     }
 }
 
-void QClipper::SetTray()
+void QClipper::CreateTray()
 {
     //    托盘菜单
     trayMenu = new QMenu(this);
     trayMenu->addAction(ui->ShowNormal);
     trayMenu->addAction(ui->Reboot);
     trayMenu->addAction(ui->Exit);
-
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
@@ -259,9 +274,7 @@ bool QClipper::IsBlank(QString text)
     for(int i=0;i <text.size(); i++)
     {
         if( text.at(i) != ' ' )
-        {
             return false;
-        }
     }
     return true;
 }
@@ -531,6 +544,17 @@ void QClipper::on_Save_triggered()
     delete saveItem;
 
     this->Export();
+
+    //insert data into database:
+    QSqlQuery query;
+    query.prepare("INSERT INTO text(id,content) VALUES(:id, :content)");
+    query.bindValue(":id",1);
+    query.bindValue(":content",saveText);
+    bool flag = query.exec();
+    if(!flag)
+    {
+        QMessageBox::warning(NULL,"数据插入失败",query.lastError().text());
+    }
 }
 
 void QClipper::on_clearMult_triggered()
@@ -568,7 +592,6 @@ void QClipper::on_Close_triggered()
         return;
     }
     QMessageBox msg(this);
-    msg.resize(600,200);
     msg.setText(tr("      请选择需要的操作"));
 
     QPushButton* SetMin = msg.addButton(tr("最小化"), QMessageBox::ActionRole);
