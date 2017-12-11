@@ -66,7 +66,7 @@ private:
     QMenu menu;
     QMenu *m=NULL;
     QFile* StoredFile;
-    QString saveText;
+    QString saveText,deleteText;
     QStringList loadText;
     QUndoStack *undoStack;
     QAction *UnClear, *UnDelete;
@@ -101,6 +101,10 @@ private slots:
     void on_Clear_triggered();
 
     void Export();
+
+    void InsertIntoDB();
+
+    void DeleteFromDB();
 
     void on_About_QClipper_triggered();
 

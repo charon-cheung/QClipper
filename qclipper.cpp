@@ -51,7 +51,7 @@ QClipper::QClipper(QWidget *parent) :
     db.setPassword("123456");
     if(!db.open())
     {
-         qDebug()<<db.lastError();
+         QMessageBox::warning(0,"出错了!",db.lastError().text());
     }
     else
         qDebug()<<"mysql opened !";
@@ -368,6 +368,31 @@ void QClipper::Export()
         f->close();
     }
     delete f;
+    InsertIntoDB();
+}
+
+void QClipper::InsertIntoDB()
+{
+    QSqlQuery query;
+    query.prepare("INSERT INTO text(content) VALUES(:content)");
+    query.bindValue(":content",saveText);
+    bool flag = query.exec();
+    if(!flag)
+    {
+        QMessageBox::warning(NULL,"写入数据库失败",query.lastError().text());
+    }
+}
+
+void QClipper::DeleteFromDB()
+{
+    QSqlQuery query;
+    query.prepare("DELETE FROM text WHERE content = ?");
+    query.addBindValue(deleteText);
+    bool flag = query.exec();
+    if(!flag)
+    {
+        QMessageBox::warning(NULL,"从数据库删除失败！",query.lastError().text());
+    }
 }
 
 void QClipper::on_About_QClipper_triggered()
@@ -544,17 +569,6 @@ void QClipper::on_Save_triggered()
     delete saveItem;
 
     this->Export();
-
-    //insert data into database:
-    QSqlQuery query;
-    query.prepare("INSERT INTO text(id,content) VALUES(:id, :content)");
-    query.bindValue(":id",1);
-    query.bindValue(":content",saveText);
-    bool flag = query.exec();
-    if(!flag)
-    {
-        QMessageBox::warning(NULL,"数据插入失败",query.lastError().text());
-    }
 }
 
 void QClipper::on_clearMult_triggered()
@@ -619,8 +633,8 @@ void QClipper::on_Delete_triggered()
     DeleteCmd *delete_cmd = new DeleteCmd(ui->stored);
     undoStack->push(delete_cmd);
 
-    QString currentText = ui->stored->currentItem()->text();
-    loadText.removeOne(currentText);
+    deleteText = ui->stored->currentItem()->text();
+    loadText.removeOne(deleteText);
 
     QFile *file = new QFile(this);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
@@ -639,6 +653,7 @@ void QClipper::on_Delete_triggered()
 
     delete file;
     delete ui->stored->currentItem();
+    DeleteFromDB();
 }
 
 void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
