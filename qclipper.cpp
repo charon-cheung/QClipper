@@ -43,7 +43,7 @@ QClipper::QClipper(QWidget *parent) :
 
     connect(qApp->clipboard(), SIGNAL(dataChanged()), this, SLOT(addText())  );
     connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
-
+#if 0
     QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
     db.setHostName("localhost");
     db.setDatabaseName("qclipper");
@@ -51,10 +51,11 @@ QClipper::QClipper(QWidget *parent) :
     db.setPassword("123456");
     if(!db.open())
     {
-         QMessageBox::warning(0,"出错了!",db.lastError().text());
+         QMessageBox::warning(0,"数据库打开失败!",db.lastError().text());
     }
     else
         qDebug()<<"mysql opened !";
+#endif
 }
 
 QClipper::~QClipper()
@@ -70,7 +71,7 @@ void QClipper::InitUi()
     this->setMouseTracking(true);
     this->setWindowIcon(QIcon(":/Icon/QClipper"));
     this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setWindowTitle("QClipper 1.5");
+    this->setWindowTitle("QClipper 1.5.2");
 
     ui->filter->setGeometry(0,1, WIDTH, FILTER_H);
     ui->filter->setPlaceholderText("Filter");
@@ -80,13 +81,14 @@ void QClipper::InitUi()
     ui->list->setFrameShape(QFrame::NoFrame);
     ui->list->setGeometry(0, FILTER_H+1,WIDTH, HEIGHT+5);
     ui->list->setContextMenuPolicy(Qt::CustomContextMenu);
-    ui->list->setFocus();
+    ui->stored->setFocus();
     ui->list->installEventFilter(this);
 
     ui->stored->setFrameStyle(QFrame::Plain);
     ui->stored->setFrameShape(QFrame::NoFrame);
     ui->stored->setGeometry(WIDTH+5, FILTER_H+1, WIDTH, HEIGHT+5);
     ui->stored->setContextMenuPolicy(Qt::CustomContextMenu);
+    ui->stored->installEventFilter(this);
 }
 
 void QClipper::InitOther()
@@ -121,7 +123,7 @@ void QClipper::CreateTray()
     //    托盘图标
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/Icon/qclipper.png"));
-    trayIcon->setToolTip("QClipper 1.5");
+    trayIcon->setToolTip("QClipper 1.5.2");
     trayIcon->setContextMenu(trayMenu);
     trayIcon->showMessage("托盘标题", "托盘内容", QSystemTrayIcon::Information, 3000);
     trayIcon->show();
@@ -221,7 +223,6 @@ void QClipper::ClickText()
 
     qApp->clipboard()->blockSignals(true);  //很关键，防止下一句代码中剪贴板发出dataChange信号
     QSound::play(":/Sound/Sound/MouseClick.wav");
-
     qApp->clipboard()->setText(ItemText, QClipboard::Clipboard);
     if(m_show)  return;
     this->on_ShowMini();
@@ -368,7 +369,7 @@ void QClipper::Export()
         f->close();
     }
     delete f;
-    InsertIntoDB();
+//    InsertIntoDB();
 }
 
 void QClipper::InsertIntoDB()
@@ -379,7 +380,7 @@ void QClipper::InsertIntoDB()
     bool flag = query.exec();
     if(!flag)
     {
-        QMessageBox::warning(NULL,"写入数据库失败",query.lastError().text());
+        QMessageBox::warning(NULL,"数据库写入失败",query.lastError().text());
     }
 }
 
@@ -391,14 +392,14 @@ void QClipper::DeleteFromDB()
     bool flag = query.exec();
     if(!flag)
     {
-        QMessageBox::warning(NULL,"从数据库删除失败！",query.lastError().text());
+        QMessageBox::warning(NULL,"从数据库删除数据失败！",query.lastError().text());
     }
 }
 
 void QClipper::on_About_QClipper_triggered()
 {
     // parent用this, 则对话框也采用QClipper的样式表
-    QMessageBox::about(this, "QClipper 1.5", "QClipper是我自己开发的一个剪贴板工具");
+    QMessageBox::about(this, "QClipper 1.5.2", "QClipper是我自己开发的一个剪贴板工具");
 }
 
 void QClipper::changeEvent(QEvent *e)
@@ -461,53 +462,86 @@ void QClipper::on_Exit_triggered()
 {
     qApp->quit();   // 退出
 }
-
+//安装filter的obj不能再使用上下键选择文本
 bool QClipper::eventFilter(QObject *obj, QEvent *e)
 {
-    if(obj == ui->list)
+    if(obj == ui->stored)
+    {
+        if(ui->stored->count()==0)    return false;
+        if(e->type() == QEvent::KeyPress)
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent* >(e);
+            QString keyText;
+            int StoredRow = ui->stored->currentRow();
+            int StoredRowCount = ui->stored->count();
+            switch(keyEvent->key())
+            {
+            case Qt::Key_Space :
+                keyText = ui->stored->currentItem()->text();
+
+                QSound::play(":/Sound/Sound/MouseClick.wav");
+                this->on_ShowMini();
+                break;
+            case Qt::Key_Up :
+                if(StoredRow)
+                    ui->stored->setCurrentRow(StoredRow-1);
+                else
+                    ui->stored->setCurrentRow(StoredRowCount-1);
+                QSound::play(":/Sound/Sound/KeyPress.wav");
+                break;
+            case Qt::Key_Down :
+                if(StoredRow!=StoredRowCount-1)
+                    ui->stored->setCurrentRow(StoredRow+1);
+                else
+                    ui->stored->setCurrentRow(0);
+                QSound::play(":/Sound/Sound/KeyPress.wav");
+                break;
+            default :
+                break;
+            }
+            qApp->clipboard()->blockSignals(true);
+            qApp->clipboard()->setText(keyText, QClipboard::Clipboard);
+            return true;
+        }
+        else{
+            //只能在这里解除键盘事件的信号封锁   ???
+            qApp->clipboard()->blockSignals(false);
+            return false;
+        }
+    }
+    else if(obj == ui->list)
     {
         if(ui->list->count()==0)    return false;
         if(e->type() == QEvent::KeyPress)
         {
             QKeyEvent *keyEvent = static_cast<QKeyEvent* >(e);
             QString keyText;
-
+            int ListRow = ui->list->currentRow();
+            int ListRowCount = ui->list->count();
             switch(keyEvent->key())
             {
-            case Qt::Key_1 :
-                keyText = ui->list->item(0)->text().remove(0, 3);
+            case Qt::Key_Space :
+                keyText = ui->stored->currentItem()->text();
+                this->on_ShowMini();
+                QSound::play(":/Sound/Sound/MouseClick.wav");
                 break;
-            case Qt::Key_2 :
-                keyText = ui->list->item(1)->text().remove(0, 3);
+            case Qt::Key_Up :
+                if(ListRow)
+                    ui->stored->setCurrentRow(ListRow-1);
+                else
+                    ui->stored->setCurrentRow(ListRowCount-1);
+                QSound::play(":/Sound/Sound/KeyPress.wav");
                 break;
-            case Qt::Key_3 :
-                keyText = ui->list->item(2)->text().remove(0, 3);
-                break;
-            case Qt::Key_4 :
-                keyText = ui->list->item(3)->text().remove(0,3);
-                break;
-            case Qt::Key_5 :
-                keyText = ui->list->item(4)->text().remove(0,3);
-                break;
-            case Qt::Key_6 :
-                keyText = ui->list->item(5)->text().remove(0,3);
-                break;
-            case Qt::Key_7 :
-                keyText = ui->list->item(6)->text().remove(0,3);
-                break;
-            case Qt::Key_8 :
-                keyText = ui->list->item(7)->text().remove(0,3);
-                break;
-            case Qt::Key_9 :
-                keyText = ui->list->item(8)->text().remove(0,3);
-                break;
-            case Qt::Key_0 :
-                keyText = ui->list->item(9)->text().remove(0,3);
+            case Qt::Key_Down :
+                if(ListRow!=ListRowCount-1)
+                    ui->stored->setCurrentRow(ListRow+1);
+                else
+                    ui->stored->setCurrentRow(0);
+                QSound::play(":/Sound/Sound/KeyPress.wav");
                 break;
             default :
                 break;
             }
-            QSound::play(":/Sound/Sound/KeyPress.wav");
             qApp->clipboard()->blockSignals(true);
             qApp->clipboard()->setText(keyText, QClipboard::Clipboard);
             return true;
@@ -653,7 +687,7 @@ void QClipper::on_Delete_triggered()
 
     delete file;
     delete ui->stored->currentItem();
-    DeleteFromDB();
+//    DeleteFromDB();
 }
 
 void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)

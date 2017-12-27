@@ -4,7 +4,7 @@ IDI_ICON1   ICON   qclipper.ico
 
 VS_VERSION_INFO VERSIONINFO
 
- FILEVERSION    2017,8,17
+ FILEVERSION    2017,12,27
  PRODUCTVERSION 1,2,0,0
  FILEFLAGS      0x0L
  FILEFLAGSMASK  0x3fL
@@ -24,13 +24,13 @@ BEGIN
         BEGIN
 
             VALUE "CompanyName", "Wiscom"
-            VALUE "FileDescription", "QClipper 1.5"
-            VALUE "FileVersion", "1.5.0.0"
+            VALUE "FileDescription", "QClipper 1.5.2"
+            VALUE "FileVersion", "1.5.2.0"
             VALUE "LegalCopyright", ""
             VALUE "InternalName", ""
             VALUE "OriginalFilename", "QClipper.exe"
             VALUE "ProductName", "QClipper"
-            VALUE "ProductVersion", "1.5.0.0"
+            VALUE "ProductVersion", "1.5.2.0"
 
         END
 
