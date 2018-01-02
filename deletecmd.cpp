@@ -21,8 +21,8 @@ void DeleteCmd::undo()
     QTextStream write(f);
     if(!f->open(QIODevice::WriteOnly | QIODevice::Append) )
     {
-        //å¦‚ä½•ä½¿ç”¨ä¸»çª—å£çš„æ ·å¼?
-        QMessageBox::warning(0,"æ¢å¤åˆ°å¸¸ç”¨æ–‡æœ¬æ—¶å‡ºé”™",f->errorString());
+        //å¦?ä½?ä½¿ç?¨ä¸»çª??£ç???·å??
+        QMessageBox::warning(0,"?¢å??°å¸¸?¨æ???¬æ?¶å?ºé??",f->errorString());
         return;
     }
     write.setCodec("UTF-8");

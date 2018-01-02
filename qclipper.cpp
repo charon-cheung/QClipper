@@ -43,19 +43,6 @@ QClipper::QClipper(QWidget *parent) :
 
     connect(qApp->clipboard(), SIGNAL(dataChanged()), this, SLOT(addText())  );
     connect(ui->ShowNormal,SIGNAL(triggered(bool)), this, SLOT(on_ShowCenter()) );
-#if 0
-    QSqlDatabase db=QSqlDatabase::addDatabase("QMYSQL");
-    db.setHostName("localhost");
-    db.setDatabaseName("qclipper");
-    db.setUserName("root");
-    db.setPassword("123456");
-    if(!db.open())
-    {
-         QMessageBox::warning(0,"数据库打开失败!",db.lastError().text());
-    }
-    else
-        qDebug()<<"mysql opened !";
-#endif
 }
 
 QClipper::~QClipper()
@@ -231,12 +218,12 @@ void QClipper::ClickText()
 void QClipper::LoadSaveText()
 {
     StoredFile = new QFile(this);
-
+    StoredFile->setPermissions(QFileDevice::ReadOwner);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     StoredFile->setFileName("save.txt");
     QTextStream load(StoredFile);
     if(!StoredFile->exists())
-        QMessageBox::information(this, "加载保存的文本时出错","没有在bin文件夹发现save.text, 已经自动创建文件");
+        QMessageBox::information(this, "注意!","没有在bin文件夹发现save.text, 已经自动创建文件");
 
     if(!StoredFile->open(QIODevice::ReadWrite))
     {
@@ -369,7 +356,6 @@ void QClipper::Export()
         f->close();
     }
     delete f;
-//    InsertIntoDB();
 }
 
 void QClipper::InsertIntoDB()
@@ -479,6 +465,16 @@ bool QClipper::eventFilter(QObject *obj, QEvent *e)
             case Qt::Key_Space :
                 keyText = ui->stored->currentItem()->text();
 
+                QSound::play(":/Sound/Sound/MouseClick.wav");
+                this->on_ShowMini();
+                break;
+            case Qt::Key_W :
+                keyText = ui->stored->item(0)->text();
+                QSound::play(":/Sound/Sound/MouseClick.wav");
+                this->on_ShowMini();
+                break;
+            case Qt::Key_S :
+                keyText = ui->stored->item(StoredRowCount - 1)->text();
                 QSound::play(":/Sound/Sound/MouseClick.wav");
                 this->on_ShowMini();
                 break;
@@ -626,9 +622,9 @@ void QClipper::on_Help_triggered()
                              "Alt+Shift+W : 呼唤                       \n\n"
                              "Alt+Shift+D : 隐藏                       \n\n"
                              "在托盘点击右键可以退出                   \n\n"
-                             "可用鼠标点击和键盘选择                   \n\n"
-                             "可保存剪贴记录到常用文本               \n\n"
-                             "在exe所在文件夹建save.text可以保存         \n"
+                             "可用鼠标点击选择                         \n\n"
+                             "可保存剪贴记录到常用文本                 \n\n"
+                             "键盘上下键选择常用文本,空格可复制        \n\n"
                              "常用的剪贴文本                               ");
 }
 
@@ -687,7 +683,6 @@ void QClipper::on_Delete_triggered()
 
     delete file;
     delete ui->stored->currentItem();
-//    DeleteFromDB();
 }
 
 void QClipper::on_stored_customContextMenuRequested(const QPoint &pos)
