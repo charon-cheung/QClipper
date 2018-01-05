@@ -76,6 +76,9 @@ void QClipper::InitUi()
     ui->stored->setGeometry(WIDTH+5, FILTER_H+1, WIDTH, HEIGHT+5);
     ui->stored->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->stored->installEventFilter(this);
+
+    ui->filter->setPlaceholderText(QString("输入进程名,回车键关闭"));
+    ui->filter->setFont(QFont("Inconsolata",20));
 }
 
 void QClipper::InitOther()
@@ -553,6 +556,7 @@ bool QClipper::eventFilter(QObject *obj, QEvent *e)
 
 void QClipper::on_filter_textChanged(const QString &arg1)
 {
+#if 0
     count = ui->list->count();
     for(int i=0; i<count; i++)
     {
@@ -564,6 +568,7 @@ void QClipper::on_filter_textChanged(const QString &arg1)
         }
         else  ui->list->item(i)->setHidden(false);
     }
+#endif
 }
 
 void QClipper::on_AddTemplate_triggered()
@@ -701,4 +706,15 @@ void QClipper::keyPressEvent(QKeyEvent *event)
         qDebug()<<"escape pressed";
         return;
     }
+}
+
+void QClipper::on_filter_returnPressed()
+{
+    QString process = ui->filter->text();
+    if(process.isEmpty() || process.at(process.count()-1)==' ')
+        return;
+    QString cmd="taskkill /f /im "+ui->filter->text()+".exe";
+    std::string str = cmd.toStdString();
+    const char *s= str.c_str();
+    system(s);
 }
