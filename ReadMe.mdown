@@ -1,5 +1,5 @@
 ## QClipper是一个基于Qt 5开发的剪贴板工具，可以方便地对剪贴板进行各种操作。
-![主界面](https://raw.githubusercontent.com/rjosodtssp/QClipper/master/app.png)
+![主界面](https://raw.githubusercontent.com/rjosodtssp/QClipper/master/Animation.gif)
 
 #### 已经实现的功能：
 1. 启动时加载常用文本，修改文本后，需要重启加载新的文本
